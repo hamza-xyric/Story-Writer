@@ -1,0 +1,103 @@
+/* Design Tokens - "Warm & Personal" Aesthetic */
+
+:root {
+  /* =========== SURFACE PALETTE =========== */
+  /* Warm cream backgrounds - feels like aged paper */
+  --color-surface-primary: #faf7f2;
+  --color-surface-secondary: #f5f0e8;
+  --color-surface-tertiary: #ebe4d8;
+  --color-surface-elevated: #ffffff;
+
+  /* =========== TEXT PALETTE =========== */
+  --color-text-primary: #2d2a26;
+  --color-text-secondary: #5c564c;
+  --color-text-muted: #8a837a;
+  --color-text-inverted: #faf7f2;
+
+  /* =========== ACCENT COLORS =========== */
+  /* Rich, earthy tones - not corporate blues */
+  --color-accent-terracotta: #c4704b;
+  --color-accent-terracotta-light: #d4896a;
+  --color-accent-terracotta-dark: #a85c3a;
+  --color-accent-sage: #7d9b7a;
+  --color-accent-sage-light: #9db89a;
+  --color-accent-dusty-rose: #b88b8b;
+  --color-accent-golden: #c9a959;
+  --color-accent-slate: #6b7b8a;
+
+  /* =========== SEMANTIC COLORS =========== */
+  /* Relationship categories */
+  --color-family: #8b6b61;
+  --color-friend: #6b8b7a;
+  --color-mentor: #7a6b8b;
+  --color-colleague: #8b8a6b;
+  --color-romantic: #b87a7a;
+  --color-other: #7a8b8b;
+
+  /* Completeness indicators */
+  --color-detailed: #7d9b7a;
+  --color-partial: #c9a959;
+  --color-brief: #b88b8b;
+
+  /* Status */
+  --color-success: #7d9b7a;
+  --color-warning: #c9a959;
+  --color-error: #c4704b;
+
+  /* =========== BORDERS & SHADOWS =========== */
+  --color-border-subtle: rgba(45, 42, 38, 0.06);
+  --color-border-default: rgba(45, 42, 38, 0.12);
+  --color-border-strong: rgba(45, 42, 38, 0.2);
+
+  --shadow-xs: 0 1px 2px rgba(45, 42, 38, 0.04);
+  --shadow-sm: 0 2px 4px rgba(45, 42, 38, 0.06);
+  --shadow-md: 0 4px 12px rgba(45, 42, 38, 0.08);
+  --shadow-lg: 0 8px 24px rgba(45, 42, 38, 0.1);
+  --shadow-xl: 0 12px 36px rgba(45, 42, 38, 0.12);
+
+  /* =========== SPACING =========== */
+  --space-0: 0;
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.25rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-10: 2.5rem;
+  --space-12: 3rem;
+  --space-16: 4rem;
+  --space-20: 5rem;
+  --space-24: 6rem;
+
+  /* =========== RADIUS =========== */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-full: 9999px;
+
+  /* =========== TRANSITIONS =========== */
+  --ease-default: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-gentle: cubic-bezier(0.25, 0.1, 0.25, 1);
+  --ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  --duration-instant: 100ms;
+  --duration-fast: 150ms;
+  --duration-normal: 250ms;
+  --duration-slow: 400ms;
+  --duration-slower: 600ms;
+
+  /* =========== Z-INDEX =========== */
+  --z-dropdown: 100;
+  --z-modal: 200;
+  --z-toast: 300;
+  --z-tooltip: 400;
+
+  /* =========== LAYOUT =========== */
+  --sidebar-width: 260px;
+  --sidebar-collapsed-width: 72px;
+  --header-height: 64px;
+  --max-content-width: 1200px;
+  --reader-max-width: 720px;
+}

@@ -1,0 +1,222 @@
+/* Animations - Gentle, Personal Feel */
+
+/* =========== KEYFRAMES =========== */
+
+/* Fade in */
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Fade in and slide up */
+@keyframes slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Fade in and slide down */
+@keyframes slide-down {
+  from {
+    opacity: 0;
+    transform: translateY(-12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Slide in from right */
+@keyframes slide-in-right {
+  from {
+    opacity: 0;
+    transform: translateX(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Slide in from left */
+@keyframes slide-in-left {
+  from {
+    opacity: 0;
+    transform: translateX(-24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Gentle scale */
+@keyframes scale-in {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Pulse glow */
+@keyframes pulse-glow {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(196, 112, 75, 0);
+  }
+  50% {
+    box-shadow: 0 0 0 8px rgba(196, 112, 75, 0.15);
+  }
+}
+
+/* Gentle bounce */
+@keyframes gentle-bounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-4px);
+  }
+}
+
+/* Shimmer loading effect */
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+/* Spin */
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* =========== ANIMATION UTILITY CLASSES =========== */
+
+.animate-fade-in {
+  animation: fade-in var(--duration-normal) var(--ease-gentle) forwards;
+}
+
+.animate-slide-up {
+  animation: slide-up var(--duration-normal) var(--ease-gentle) forwards;
+}
+
+.animate-slide-down {
+  animation: slide-down var(--duration-normal) var(--ease-gentle) forwards;
+}
+
+.animate-slide-in-right {
+  animation: slide-in-right var(--duration-slow) var(--ease-gentle) forwards;
+}
+
+.animate-slide-in-left {
+  animation: slide-in-left var(--duration-slow) var(--ease-gentle) forwards;
+}
+
+.animate-scale-in {
+  animation: scale-in var(--duration-normal) var(--ease-gentle) forwards;
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 2s var(--ease-gentle) infinite;
+}
+
+.animate-shimmer {
+  background: linear-gradient(
+    90deg,
+    var(--color-surface-secondary) 25%,
+    var(--color-surface-tertiary) 50%,
+    var(--color-surface-secondary) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+.animate-spin {
+  animation: spin 1s linear infinite;
+}
+
+/* =========== STAGGER DELAYS =========== */
+
+.delay-1 { animation-delay: 50ms; }
+.delay-2 { animation-delay: 100ms; }
+.delay-3 { animation-delay: 150ms; }
+.delay-4 { animation-delay: 200ms; }
+.delay-5 { animation-delay: 250ms; }
+.delay-6 { animation-delay: 300ms; }
+
+/* =========== HOVER TRANSITIONS =========== */
+
+.hover-lift {
+  transition: transform var(--duration-fast) var(--ease-gentle),
+              box-shadow var(--duration-fast) var(--ease-gentle);
+}
+
+.hover-lift:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+}
+
+.hover-glow {
+  transition: box-shadow var(--duration-normal) var(--ease-gentle);
+}
+
+.hover-glow:hover {
+  box-shadow: 0 0 0 4px rgba(196, 112, 75, 0.15);
+}
+
+/* =========== FOCUS STYLES =========== */
+
+.focus-ring {
+  transition: box-shadow var(--duration-fast) var(--ease-default);
+}
+
+.focus-ring:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--color-surface-primary),
+              0 0 0 4px var(--color-accent-terracotta);
+}
+
+/* =========== PAGE TRANSITIONS =========== */
+
+.page-enter {
+  opacity: 0;
+  transform: translateY(8px);
+}
+
+.page-enter-active {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity var(--duration-normal) var(--ease-gentle),
+              transform var(--duration-normal) var(--ease-gentle);
+}
+
+.page-exit {
+  opacity: 1;
+}
+
+.page-exit-active {
+  opacity: 0;
+  transition: opacity var(--duration-fast) var(--ease-gentle);
+}
