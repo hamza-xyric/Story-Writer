@@ -112,7 +112,7 @@ export function Book() {
             {entries.length > 0 && (
               <div className="animate-fade-in" style={{ animationDelay: '300ms' }}>
                 <Card
-                  variant="filled"
+                  variant="elevated"
                   padding="md"
                   className="inline-block"
                 >

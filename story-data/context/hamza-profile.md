@@ -9,17 +9,25 @@ preferred_name: "Hamza"
 
 # === WRITING STYLE ===
 writing_style:
-  tone: "[TO BE LEARNED]"
-  length_preference: "[TO BE LEARNED]"
+  tone: "conversational, reflective [emerging]"
+  length_preference: "moderate - 350-550 words per entry [emerging]"
   pov: "first-person"
-  tense: "past"
+  tense: "past for memories, present for reflections [emerging]"
 
 # === VOICE PATTERNS ===
 voice_patterns:
   # Writing patterns
   writing:
-    story_starters: []           # e.g., "I remember...", "There was this time..."
-    common_phrases: []           # Phrases used repeatedly
+    story_starters:              # e.g., "I remember...", "There was this time..."
+      - "I think..." [emerging]
+      - "I have been wanting..." [emerging]
+      - "A random..." [emerging]
+    common_phrases:              # Phrases used repeatedly
+      - "really" [emerging - high frequency]
+      - "just" [emerging - high frequency]
+      - "kind of" [emerging]
+      - "a lot, a lot, a lot" [emerging - emphatic repetition]
+      - "I'm like" [emerging]
     humor_style: "[TO BE LEARNED]"
     emotional_deflection: "[TO BE LEARNED]"  # How he deflects deep emotions
   # Speaking patterns (from voice recordings)
@@ -31,37 +39,51 @@ voice_patterns:
 
 # === VOCABULARY FINGERPRINT ===
 vocabulary_patterns:
-  high_frequency_words: []       # Words used more than average
-  signature_phrases: []          # Multi-word expressions unique to him
+  high_frequency_words:          # Words used more than average
+    - "really" [emerging]
+    - "just" [emerging]
+    - "think" [emerging]
+    - "want/wanna" [emerging]
+  signature_phrases:             # Multi-word expressions unique to him
+    - "a lot, a lot, a lot" [emerging]
+    - "kind of just" [emerging]
+    - "core memories" [emerging]
   avoided_words: []              # Words he never uses (useful for ghostwriting)
   emotional_vocabulary:
     joy: []                      # His words for happiness
     sadness: []                  # His words for sorrow
-    anger: []                    # His words for frustration
+    anger:                       # His words for frustration
+      - "Shit man" [emerging]
     fear: []                     # His words for anxiety
     love: []                     # His words for affection
-    nostalgia: []                # His words for longing/memory
+    nostalgia:                   # His words for longing/memory
+      - "nostalgic" [emerging]
+      - "relive" [emerging]
+      - "cherish" [emerging]
+      - "core memories" [emerging]
+      - "fade away" [emerging]
 
 # === NARRATIVE STRUCTURE ===
 narrative_patterns:
-  typical_opening: "[TO BE LEARNED]"      # How he starts stories
-  typical_closing: "[TO BE LEARNED]"      # How he ends them
-  transition_style: "[TO BE LEARNED]"     # How he moves between scenes
-  detail_density: "[TO BE LEARNED]"       # sparse | moderate | rich
-  temporal_flow: "[TO BE LEARNED]"        # chronological | non-linear | mixed
+  typical_opening: "I + verb statements (I think, I have been) [emerging]"
+  typical_closing: "Future intent or reflection [emerging]"
+  transition_style: "Section breaks (---) for topic shifts [emerging]"
+  detail_density: "moderate [emerging]"   # sparse | moderate | rich
+  temporal_flow: "chronological with tangents [emerging]"
   sentence_patterns:
-    average_length: 0                     # Words per sentence
-    complexity: "[TO BE LEARNED]"         # simple | compound | complex | mixed
-    fragment_usage: "[TO BE LEARNED]"     # never | rare | occasional | frequent
+    average_length: 18                    # Words per sentence (estimated)
+    complexity: "mixed [emerging]"        # simple | compound | complex | mixed
+    fragment_usage: "occasional [emerging]"  # never | rare | occasional | frequent
 
 # === SENSORY PREFERENCES ===
 sensory_tendencies:
-  visual: "[TO BE LEARNED]"               # high | moderate | low
-  auditory: "[TO BE LEARNED]"
-  olfactory: "[TO BE LEARNED]"
-  tactile: "[TO BE LEARNED]"
-  gustatory: "[TO BE LEARNED]"
-  # Which senses he naturally invokes when describing memories
+  visual: "low [emerging]"                # high | moderate | low
+  auditory: "low [emerging]"
+  olfactory: "none observed"
+  tactile: "none observed"
+  gustatory: "none observed"
+  conceptual_emotional: "high [emerging]" # Dominant - feelings, thoughts, memories
+  # Note: Early entries focus on emotional/conceptual content over sensory details
 
 # === PEOPLE REFERENCES ===
 people_references: []
@@ -108,18 +130,20 @@ session_history: []
 
 # === ANALYTICS ===
 input_analytics:
-  total_freeform_captures: 0
+  total_freeform_captures: 2
   total_conversations: 0
   total_voice_recordings: 0
-  avg_freeform_length: 0
+  avg_freeform_length: 447
   avg_conversation_questions: 0
 
 # === METADATA ===
 profile_created: "2024-12-24"
-last_session: "2024-12-24"
-total_sessions: 0
-total_entries: 0
-profile_version: "2.0"
+last_session: "2024-12-25"
+total_sessions: 1
+total_entries: 2
+total_words: 895
+profile_version: "2.1"
+baseline_analysis: "voice-baseline-2024-12-25.md"
 ---
 
 # Hamza's Writing Context
@@ -131,21 +155,32 @@ This is your personal voice profile. It captures how you write, speak, and tell 
 ## Current Understanding
 
 ### Writing Voice
-Not yet established - share some memories and your voice will emerge naturally.
+**Emerging patterns (based on 2 entries, 895 words):**
+- Conversational, reflective tone
+- First-person perspective with stream-of-consciousness flow
+- Uses repetition for emphasis ("a lot, a lot, a lot")
+- Informal language (wanna, I'm like, Shit man)
+- Opens with "I" statements, closes with future intent or reflection
 
 ### Speaking Voice
 Not yet established - send voice recordings to capture how you speak differently than write.
 
 ### Key Themes
-No themes identified yet - these will appear as you write more entries.
+**Emerging themes:**
+- Memory preservation and fear of forgetting
+- Gaming/digital life (League of Legends, Warcraft, Neopets)
+- Nostalgia and "core memories"
+- Self-documentation and life story
 
 ### Sensory Style
-Not yet known - which senses do you naturally invoke? Sight, sound, smell?
+Currently conceptual/emotional dominant. Sensory details (visual, auditory, etc.) are minimal in early entries - may emerge with more descriptive memories.
 
 ### Session Notes
 - Profile initialized: December 24, 2024
-- Profile version: 2.0 (expanded schema)
-- Ready to begin capturing your life story
+- Profile version: 2.1 (first voice analysis)
+- Baseline established: December 25, 2024
+- Entries analyzed: 2 (E-2024-001, E-2024-002)
+- Next milestone: 5 entries for confirmed patterns
 
 ## How Voice Capture Works
 
@@ -181,4 +216,4 @@ The more you write, the more I become your voice.
 
 ---
 
-*Profile v2.0 | Created: 2024-12-24 | Sessions: 0 | Entries: 0*
+*Profile v2.1 | Created: 2024-12-24 | Updated: 2024-12-25 | Sessions: 1 | Entries: 2 | Words: 895*

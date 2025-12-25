@@ -30,7 +30,7 @@ const phaseMessages: Record<ExportPhase, string> = {
   complete: 'Your memoir is ready!',
 };
 
-export function ExportModal({ book, chapters, isOpen, onClose }: ExportModalProps) {
+export function ExportModal({ book: _book, chapters, isOpen, onClose }: ExportModalProps) {
   const [options, setOptions] = useState<ExportOptions>({
     format: 'pdf',
     includeTableOfContents: true,

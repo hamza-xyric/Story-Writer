@@ -1,0 +1,282 @@
+/*
+ * Memoir EPUB Stylesheet for Life Story System
+ * Version: 1.0
+ * Last Updated: 2024-12-25
+ *
+ * Optimized for e-readers: Kindle, Apple Books, Kobo, etc.
+ */
+
+/* ============================================
+   Base Typography
+   ============================================ */
+
+body {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 1em;
+  line-height: 1.6;
+  color: #1a1a1a;
+  margin: 0;
+  padding: 1em;
+}
+
+/* ============================================
+   Headings
+   ============================================ */
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: -apple-system, "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-weight: bold;
+  color: #000;
+  margin-top: 1.5em;
+  margin-bottom: 0.5em;
+  line-height: 1.2;
+}
+
+/* Book title / Part headers */
+h1 {
+  font-size: 2em;
+  text-align: center;
+  margin-top: 2em;
+  margin-bottom: 1em;
+  page-break-before: always;
+}
+
+/* Chapter titles */
+h2 {
+  font-size: 1.5em;
+  margin-top: 2em;
+  border-bottom: 1px solid #ccc;
+  padding-bottom: 0.3em;
+  page-break-before: always;
+}
+
+/* Section headers */
+h3 {
+  font-size: 1.25em;
+  font-style: italic;
+  margin-top: 1.5em;
+}
+
+/* Subsection headers */
+h4 {
+  font-size: 1.1em;
+  margin-top: 1em;
+}
+
+/* ============================================
+   Paragraphs and Text
+   ============================================ */
+
+p {
+  margin: 0 0 1em 0;
+  text-align: justify;
+  text-indent: 1.5em;
+}
+
+/* First paragraph after heading - no indent */
+h1 + p,
+h2 + p,
+h3 + p,
+h4 + p {
+  text-indent: 0;
+}
+
+/* Emphasis and strong */
+em {
+  font-style: italic;
+}
+
+strong {
+  font-weight: bold;
+}
+
+/* ============================================
+   Blockquotes (for memories/flashbacks)
+   ============================================ */
+
+blockquote {
+  margin: 1.5em 0;
+  padding: 0.5em 1em;
+  border-left: 3px solid #666;
+  font-style: italic;
+  background: rgba(0, 0, 0, 0.02);
+}
+
+blockquote p {
+  text-indent: 0;
+  margin: 0.5em 0;
+}
+
+/* ============================================
+   Section Breaks
+   ============================================ */
+
+hr {
+  border: none;
+  text-align: center;
+  margin: 2em 0;
+}
+
+hr::before {
+  content: "* * *";
+  color: #666;
+  font-size: 1.2em;
+  letter-spacing: 0.5em;
+}
+
+/* ============================================
+   Lists
+   ============================================ */
+
+ul, ol {
+  margin: 1em 0;
+  padding-left: 2em;
+}
+
+li {
+  margin: 0.5em 0;
+}
+
+/* ============================================
+   Links
+   ============================================ */
+
+a {
+  color: #0066cc;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* ============================================
+   Table of Contents
+   ============================================ */
+
+nav#toc {
+  margin: 2em 0;
+}
+
+nav#toc ol {
+  list-style: none;
+  padding-left: 0;
+}
+
+nav#toc li {
+  margin: 0.5em 0;
+}
+
+nav#toc a {
+  color: #000;
+}
+
+/* ============================================
+   Title Page
+   ============================================ */
+
+.title-page {
+  text-align: center;
+  margin-top: 20%;
+}
+
+.title-page h1 {
+  font-size: 2.5em;
+  margin-bottom: 0.5em;
+  border: none;
+}
+
+.title-page .subtitle {
+  font-size: 1.2em;
+  font-style: italic;
+  color: #666;
+  margin-bottom: 2em;
+}
+
+.title-page .author {
+  font-size: 1.5em;
+  margin-top: 2em;
+}
+
+.title-page .date {
+  font-size: 1em;
+  color: #666;
+  margin-top: 3em;
+}
+
+/* ============================================
+   Colophon (End Matter)
+   ============================================ */
+
+.colophon {
+  text-align: center;
+  font-size: 0.9em;
+  color: #666;
+  margin-top: 3em;
+  font-style: italic;
+}
+
+/* ============================================
+   Print / Page Breaks
+   ============================================ */
+
+.page-break {
+  page-break-after: always;
+}
+
+/* Keep headings with following content */
+h1, h2, h3, h4 {
+  page-break-after: avoid;
+}
+
+/* Keep blockquotes together */
+blockquote {
+  page-break-inside: avoid;
+}
+
+/* ============================================
+   Responsive Adjustments
+   ============================================ */
+
+@media screen and (max-width: 600px) {
+  body {
+    padding: 0.5em;
+    font-size: 0.95em;
+  }
+
+  h1 {
+    font-size: 1.75em;
+  }
+
+  h2 {
+    font-size: 1.35em;
+  }
+}
+
+/* ============================================
+   Dark Mode Support (for supported readers)
+   ============================================ */
+
+@media (prefers-color-scheme: dark) {
+  body {
+    background: #1a1a1a;
+    color: #e0e0e0;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    color: #fff;
+  }
+
+  h2 {
+    border-bottom-color: #444;
+  }
+
+  blockquote {
+    border-left-color: #888;
+    background: rgba(255, 255, 255, 0.05);
+  }
+
+  a {
+    color: #6699ff;
+  }
+}

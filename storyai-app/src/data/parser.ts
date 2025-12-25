@@ -255,27 +255,6 @@ function extractJournalAINotes(content: string): JournalAINotes | undefined {
 
   const aiNotesSection = aiNotesMatch[0];
 
-  const extractBullets = (section: string, prefix: string): string[] => {
-    const lines = section.split('\n');
-    const results: string[] = [];
-
-    for (const line of lines) {
-      const trimmed = line.trim();
-      if (trimmed.startsWith(`- ${prefix}:`)) {
-        const value = trimmed.replace(`- ${prefix}:`, '').trim();
-        if (value) results.push(value);
-      } else if (trimmed.startsWith('- ') && results.length === 0) {
-        // Handle simple bullet lists after a header pattern
-        const match = section.match(new RegExp(`${prefix}[:\\s]+([^\\n]+)`));
-        if (match) {
-          results.push(match[1].trim());
-        }
-      }
-    }
-
-    return results;
-  };
-
   // Parse bullet points from AI Notes
   const bullets = aiNotesSection
     .split('\n')

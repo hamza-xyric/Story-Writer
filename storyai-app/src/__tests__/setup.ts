@@ -5,7 +5,7 @@ import { afterEach, vi } from 'vitest';
 
 // Buffer polyfill for gray-matter
 import { Buffer } from 'buffer';
-globalThis.Buffer = Buffer;
+(globalThis as unknown as { Buffer: typeof Buffer }).Buffer = Buffer;
 
 // Cleanup after each test
 afterEach(() => {

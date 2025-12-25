@@ -1,7 +1,7 @@
 # Life Story System - Next Steps
 
-**Last Updated**: 2024-12-24
-**Current Phase**: Personalization Complete, Viewer Next
+**Last Updated**: 2024-12-25
+**Current Phase**: Book Generation Complete, Continuous Improvement
 
 ---
 
@@ -29,84 +29,77 @@ A personal memoir system where you can:
 - [x] Voice capture workflow (`/voice`)
 - [x] Draft processor (`/process`)
 
+### Book Generation (Complete - 2024-12-25)
+
+- [x] LIFE-21: Chapter Generator - tested and working
+- [x] LIFE-22: Prose Polisher - tested and working
+- [x] LIFE-23: Export Manager - PDF/EPUB/HTML working
+- [x] Voice baseline established (emerging patterns identified)
+- [x] First exports generated (PDF via weasyprint)
+
+### Viewer App (Complete)
+
+- [x] 10 views: EntryBrowser, Characters, Locations, Timeline, etc.
+- [x] D3.js visualizations
+- [x] Search with Fuse.js
+- [x] Data loading from story-data/
+
 ---
 
 ## What's Next
 
-### Phase 3: Interactive Viewer
+### Continuous Improvement
 
-**Purpose**: Visualize and explore your story in multiple ways
+The system is now complete. The main focus is:
 
-**Tech Stack**:
-- Vite + React + TypeScript
-- Tailwind CSS
-- D3.js for visualizations
-- Fuse.js for search
+1. **Capture more content** - Build the voice profile with more entries
+2. **Track voice profile growth** - Patterns will become confirmed (5+ occurrences)
+3. **Regenerate chapters** - As voice improves, regenerate for higher fidelity
 
-**Core Views**:
+### Viewer Enhancements (Optional)
 
-| View | Description |
-|------|-------------|
-| Entry Browser | Corkboard (cards) + Outliner (table) + Reader |
-| Character Profiles | Who they are, their arc, stories involving them |
-| Timeline | Zoomable (decades → years → months) |
-| Theme Explorer | How themes weave through your story |
-| Relationship Maps | Family trees, friend groups, connections |
+| Enhancement | Priority | Description |
+|-------------|----------|-------------|
+| Locations detail panel | High | Add detail view matching Characters |
+| Relationship quality display | Medium | Show connection strength |
+| Thematic threads visualization | Medium | Display book's thematic_threads |
+| Search faceting | Low | Filter by type, theme, date |
 
-**Directory**: `/viewer/`
+### Future Features
 
----
-
-### Phase 4: Book Generation
-
-**Skills to Build**:
-
-| ID | Name | Purpose |
-|----|------|---------|
-| LIFE-20 | Book Architect | Organize entries into chapter structure |
-| LIFE-21 | Chapter Generator | Weave entries into cohesive narratives |
-| LIFE-22 | Prose Polisher | Refine for publication quality |
-| LIFE-23 | Export Manager | Generate PDF, EPUB, HTML |
-
-**Output Formats**:
-- PDF (print-ready book)
-- EPUB (e-readers)
-- HTML (web viewing)
-- Audiobook (future)
-
----
-
-### Phase 5: Additional Features
-
-**Inspired by research**:
+**When ready**:
 - Weekly prompts (like Storyworth)
 - Photo-based memory prompts (like Remento)
-- Multiple output formats (like Life Memoirs AI)
 - Voice model training for better personalization
+- Audiobook generation
 
 ---
 
 ## Immediate Next Action
 
-**Start writing** to begin training the voice profile, OR **build the viewer** to visualize as you write.
+**Start capturing memories** to grow the voice profile. The more entries, the better the ghostwriter score.
 
-### To Start Writing
+### To Capture
 
-Just say:
 ```
-/freeform
+/freeform     → Just dump thoughts, no questions
+/biographer   → AI asks questions like a patient interviewer
+/journal      → Daily reflections with memory bridges
 ```
-And share a memory. No pressure, no structure needed.
 
-### To Build Viewer
+### Voice Profile Milestones
 
-Initialize:
-```bash
-cd "/Users/hamza/Story Writer"
-npm create vite@latest viewer -- --template react-ts
-cd viewer
-npm install tailwindcss d3 fuse.js gray-matter
-```
+| Entries | Expected Outcome |
+|---------|------------------|
+| 5 | First confirmed patterns (score ~0.85) |
+| 10 | 10-15 confirmed patterns (score ~0.90) |
+| 25 | Full voice profile (score 0.95+) |
+
+### Technical Notes
+
+- PDF exports use weasyprint (XeLaTeX not installed)
+- EPUB and HTML exports use Pandoc directly
+- Viewer app runs from `/storyai-app/`
 
 ---
 
@@ -114,12 +107,12 @@ npm install tailwindcss d3 fuse.js gray-matter
 
 The system is successful when:
 
-- [ ] Memories can be captured effortlessly (any mode)
-- [ ] AI generates prose that sounds like Hamza
-- [ ] Stories can be viewed by timeline, character, theme
-- [ ] Relationships between people/places are visualized
-- [ ] A book can be generated from entries
-- [ ] The whole life is recorded
+- [x] Memories can be captured effortlessly (any mode) ✓
+- [ ] AI generates prose that sounds like Hamza (improving with each entry)
+- [x] Stories can be viewed by timeline, character, theme ✓
+- [x] Relationships between people/places are visualized ✓
+- [x] A book can be generated from entries ✓
+- [ ] The whole life is recorded (ongoing)
 
 ---
 
@@ -134,4 +127,4 @@ Tools that inspired this system:
 
 ---
 
-*Next Steps v2.0 | 2024-12-24*
+*Next Steps v3.0 | 2024-12-25*

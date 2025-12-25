@@ -1,30 +1,39 @@
 # Life Story System - Progress Report
 
-**Last Updated**: 2024-12-24
-**Status**: Phase 2 Complete (10 Active Skills + Ghostwriter System)
+**Last Updated**: 2024-12-25
+**Status**: Phase 3 Complete (18 Skills + Book Generation + Viewer App)
 
 ---
 
 ## What Has Been Built
 
+### Session: 2024-12-25 (Book Generation Pipeline)
+
+**Completed Book Generation Pipeline:**
+- Tested LIFE-21 (Chapter Generator) - prose generation working
+- Tested LIFE-22 (Prose Polisher) - polishing workflow working
+- Tested LIFE-23 (Export Manager) - PDF/EPUB/HTML exports working
+- Created export infrastructure (`/exports/templates/`, `/exports/final/`)
+- Generated first exports: HTML, EPUB, PDF via weasyprint
+
+**Voice Profile Baseline Established:**
+- Analyzed 2 entries (895 words) for voice patterns
+- Created baseline analysis document (`voice-baseline-2024-12-25.md`)
+- Updated hamza-profile.md with emerging patterns (v2.1)
+- Identified vocabulary, sentence, and narrative patterns
+
+**Viewer App Complete (`storyai-app/`):**
+- 10 views: EntryBrowser, Characters, Locations, Timeline, Themes, Relationships, Book, ChapterReader, Journals, Search
+- D3.js visualizations for Timeline and Relationships
+- Full data loading from story-data/
+- Search with Fuse.js
+
 ### Session: 2024-12-24 (Major Update)
 
-**Added Personalization & Ghostwriter System**:
-- Expanded `hamza-profile.md` with vocabulary fingerprint, narrative patterns, sensory preferences, session memory
-- Enhanced LIFE-00 to v2.0 with voice capture pipeline and ghostwriter mode
-- Created sensitivity detection and handling system
-- Added session continuity (remember across conversations)
-
-**Added Input Mode Skills**:
-- LIFE-12: Freeform Capture (`/freeform`)
-- LIFE-13: Biographer Conversation (`/biographer`)
-- LIFE-14: Voice Capture (`/voice`)
-- LIFE-15: Draft Processor (`/process`)
-
-**Added Infrastructure**:
-- Created `story-data/drafts/` folder with templates
-- Updated entry template with `origin` field
-- Updated README with new workflow
+**Added Personalization & Ghostwriter System**
+**Added Input Mode Skills (LIFE-12-16)**
+**Added Book Generation Skills (LIFE-20-23)**
+**Added Data Integrity Skills (LIFE-30-32)**
 
 ---
 
@@ -34,39 +43,33 @@
 
 ```
 /Users/hamza/Story Writer/
-├── claude-skills/14-lifestory/
-│   ├── README.md
-│   ├── LIFE-00-personal-context.md   # v2.0 - Voice Manager
-│   ├── LIFE-01-entry-processor.md
-│   ├── LIFE-02-character-manager.md
-│   ├── LIFE-04-consistency-guardian.md
-│   ├── LIFE-05-emotion-excavator.md
-│   ├── LIFE-11-location-manager.md
-│   ├── LIFE-12-freeform-capture.md   # NEW
-│   ├── LIFE-13-biographer-conversation.md  # NEW
-│   ├── LIFE-14-voice-capture.md      # NEW
-│   └── LIFE-15-draft-processor.md    # NEW
-│
+├── claude-skills/14-lifestory/       # 18 active skills
 ├── story-data/
-│   ├── drafts/                       # NEW - Raw captures
-│   │   ├── _TEMPLATE.md
-│   │   └── processed/
-│   ├── entries/
-│   ├── characters/
-│   ├── locations/
+│   ├── entries/                      # 2 entries
+│   ├── characters/                   # 1 character (Trinkhalm)
+│   ├── locations/                    # Structure ready
+│   ├── chapters/                     # 2 chapters outlined
+│   ├── books/                        # Book manifest
+│   ├── journals/                     # Ready for use
+│   ├── drafts/                       # Raw captures
 │   └── context/
-│       └── hamza-profile.md          # v2.0 - Expanded
-│
+│       ├── hamza-profile.md          # v2.1 - Voice profile
+│       └── voice-baseline-2024-12-25.md  # Baseline analysis
+├── storyai-app/                      # React viewer app
+├── exports/
+│   ├── templates/                    # PDF/EPUB templates
+│   ├── final/                        # Generated exports
+│   └── logs/                         # Export history
 ├── CLAUDE.md
 ├── PROGRESS.md
 └── NEXT-STEPS.md
 ```
 
-### Skills Inventory
+### Skills Inventory (18 Total)
 
 | ID | Name | Version | Status |
 |----|------|---------|--------|
-| LIFE-00 | Personal Context & Voice Manager | 2.0 | Active |
+| LIFE-00 | Personal Context & Voice Manager | 2.1 | Active |
 | LIFE-01 | Entry Processor | 1.0 | Active |
 | LIFE-02 | Character Manager | 1.1 | Active |
 | LIFE-04 | Consistency Guardian | 1.0 | Active |
@@ -76,61 +79,69 @@
 | LIFE-13 | Biographer Conversation | 1.0 | Active |
 | LIFE-14 | Voice Capture | 1.0 | Active |
 | LIFE-15 | Draft Processor | 1.0 | Active |
-
----
-
-## Key Features
-
-### Voice Capture Pipeline
-After every entry, the system:
-1. Analyzes vocabulary frequency
-2. Tracks sentence patterns
-3. Maps emotional vocabulary
-4. Detects sensory preferences
-5. Updates profile with confirmed patterns
-
-### Pattern Confidence Levels
-- `[emerging]` - Seen 1-2 times
-- `[growing]` - Seen 3-4 times
-- `[confirmed]` - Seen 5+ times (used in ghostwriter)
-
-### Ghostwriter Mode
-When generating prose:
-- Only uses confirmed vocabulary patterns
-- Matches sentence length and rhythm
-- Uses documented opening/closing styles
-- References people correctly (Dad not father)
-
-### Input Modes
-- **Freeform**: No questions, just capture
-- **Biographer**: AI asks, you answer
-- **Voice**: Record, transcribe, paste
+| LIFE-16 | Journal Capture | 1.0 | Active |
+| LIFE-20 | Book Architect | 1.0 | Active |
+| LIFE-21 | Chapter Generator | 1.0 | **Tested** |
+| LIFE-22 | Prose Polisher | 1.0 | **Tested** |
+| LIFE-23 | Export Manager | 1.0 | **Tested** |
+| LIFE-30 | Data Consistency Checker | 1.0 | Active |
+| LIFE-31 | Auto-Sync | 1.0 | Active |
+| LIFE-32 | Data Validator | 1.0 | Active |
 
 ---
 
 ## Data State
 
-| Type | Count |
-|------|-------|
-| Entries | 0 |
-| Characters | 0 |
-| Locations | 0 |
-| Drafts | 0 |
-| Sessions | 0 |
-
-System is ready. Waiting for first memories.
-
----
-
-## Technical Notes
-
-- All data: Markdown with YAML frontmatter
-- Git-friendly format
-- No database required
-- AI-readable and human-readable
-- Terminal-based writing
-- Local web viewer planned
+| Type | Count | Notes |
+|------|-------|-------|
+| Entries | 2 | E-2024-001, E-2024-002 |
+| Characters | 1 | Trinkhalm |
+| Locations | 0 | Structure ready |
+| Chapters | 2 | C-001-03-01, C-001-06-01 |
+| Journals | 0 | Ready for use |
+| Exports | 3 | HTML, EPUB, PDF |
+| Word Count | 895 | Total captured |
 
 ---
 
-*Progress Report v2.0 | 2024-12-24*
+## Voice Profile State
+
+| Metric | Value |
+|--------|-------|
+| Entries Analyzed | 2 |
+| Total Words | 895 |
+| Confirmed Patterns | 0 |
+| Emerging Patterns | 12+ |
+| Ghostwriter Score | 0.78 (limited by emerging patterns) |
+| Next Milestone | 5 entries for first confirmed patterns |
+
+---
+
+## Book Progress
+
+**Book**: My Life Story
+**Target**: 80,000 words
+**Current**: 895 words (1.1%)
+**Chapters Outlined**: 2
+**First Export**: 2024-12-25
+
+---
+
+## Key Insights
+
+1. **Voice profile grows continuously** - Each entry adds data points
+2. **Ghostwriter score will improve** - More entries → confirmed patterns → higher scores
+3. **Pipeline is production-ready** - End-to-end generation and export tested
+4. **PDF via weasyprint** - XeLaTeX not installed, using weasyprint instead
+
+---
+
+## Next Actions
+
+1. **Capture more content** - Use `/freeform` or `/biographer`
+2. **Enhance Locations view** - Add detail panel to viewer
+3. **Re-generate chapters** - When 5+ entries exist for better score
+
+---
+
+*Progress Report v3.0 | 2024-12-25*
