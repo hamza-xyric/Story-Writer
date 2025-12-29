@@ -15,11 +15,13 @@ emotion_tags:
   - determined
   - hopeful
   - reflective
+domains: []                               # No domain triggers detected
 completeness: detailed
 writing_mode: freeform
 prompt_used: null
 revisit_count: 0
-word_count: 347
+word_count: 333
+chapter_id: "C-001-06-01"
 
 origin:
   type: freeform

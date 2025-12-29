@@ -340,6 +340,120 @@ AI: "Last time, we were exploring your grandmother's kitchen.
 
 ---
 
+## Leads Integration
+
+### What Are Leads?
+
+Leads are potential story threads discovered from transcripts, journals, and entries but not yet explored. They're stored in `story-data/context/leads.md`.
+
+**Lead types:**
+- **person**: Someone mentioned but not in character registry
+- **place**: Location mentioned but not documented
+- **event**: Specific event referenced
+- **theme**: Recurring topic worth exploring
+- **expansion**: Existing entry could be expanded
+
+### Suggesting Leads at Session Start
+
+When user starts `/biographer` with no specific topic:
+
+```
+AI: "I'm here, ready to listen. Is there something specific on your mind?
+
+     Or if you'd like, I noticed some unexplored threads from your conversations:
+
+     • **The Gitex experience** - You mentioned being impressed by Huawei
+       but dismissive of everyone else. There's a story there.
+     • **Breaking the 'slavery mindset'** - You've mentioned this philosophy
+       a few times. What shaped this worldview?
+
+     Any of those spark something? Or we can go wherever you'd like."
+```
+
+**Selection rules:**
+- Show 2-3 leads max (not overwhelming)
+- Prioritize: themes > events > people > places
+- Prefer leads with good quotes (more specific)
+- Skip leads older than 30 days unless highly rated
+
+### Updating Lead Status
+
+**During conversation:**
+When exploring a lead, note it in conversation state:
+```yaml
+conversation_state:
+  exploring_leads: ["L-2025-004"]  # Currently exploring
+```
+
+**After conversation completes:**
+```yaml
+# If story emerged → Update leads.md
+status: captured
+captured_in: E-2024-003  # Entry ID created
+
+# If discussed but no entry → Still valuable
+status: questioned
+notes: "Explored briefly, may revisit"
+
+# If user says "not interesting" → Close it
+status: dismissed
+notes: "User not interested in pursuing"
+```
+
+### Lead-to-Entry Flow
+
+```
+Lead discovered (from transcript)
+        |
+        v
+Stored in leads.md (unexplored)
+        |
+        v
+Suggested in /biographer session
+        |
+        v
+Explored in conversation
+        |
+        v
+Processed into entry (LIFE-15 → LIFE-01)
+        |
+        v
+Lead status updated to "captured"
+Lead linked to entry_id
+```
+
+### Example Lead Exploration
+
+**Lead L-2025-004:**
+```yaml
+name: "Breaking the 'Slavery Mindset'"
+quote: "You're still in the matrix..."
+potential_story: "Personal journey from employee thinking to ownership thinking"
+```
+
+**Biographer session:**
+```
+AI: "You mentioned something to Driexor about 'breaking the slavery mindset' -
+     seeing outside the matrix. What did you mean by that?"
+
+User: [Explores the philosophy]
+
+AI: "When did you first start seeing things that way?
+     Was there a moment it clicked?"
+```
+
+**After session:**
+```yaml
+# In leads.md
+- id: L-2025-004
+  status: captured
+  captured_in: E-2024-003
+  resolution_notes: "Explored in biographer session 2024-12-28,
+                     resulted in entry about ownership mindset"
+```
+
+---
+
 ## Integration
 
 ### With LIFE-00 (Personal Context)
@@ -369,6 +483,18 @@ When ready to process:
 - Pass conversation log to LIFE-15
 - LIFE-15 transforms Q&A into narrative
 - Preserves key questions in AI Notes
+
+### With LIFE-25 (Gap Analysis) and Leads Database
+
+Before starting session:
+- Read `story-data/context/leads.md`
+- Load unexplored leads (status: unexplored)
+- Offer as conversation starters if user has no topic
+
+After session:
+- Update lead status if explored
+- Link to resulting entry_id if captured
+- Add notes about what was discussed
 
 ---
 

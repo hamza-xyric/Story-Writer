@@ -240,6 +240,69 @@ None - all entries are in chapters!
 
 ---
 
+## Chapter Suggestion After Entry Creation
+
+When a new entry is saved via LIFE-01, suggest chapter placement:
+
+### Workflow
+
+```
+Entry saved (LIFE-01)
+        ↓
+Book structure exists?
+        ├── No → Skip suggestion (will be handled at 5+ entries)
+        └── Yes → Analyze entry for placement
+                        ↓
+        ┌───────────────────────────────────┐
+        │ MATCH ALGORITHM                   │
+        │                                   │
+        │ 1. Match time_period to phase     │
+        │ 2. Match themes to existing       │
+        │    chapters in that phase         │
+        │ 3. If strong match (>70%):        │
+        │    → Suggest specific chapter     │
+        │ 4. If partial match (40-70%):     │
+        │    → Offer options                │
+        │ 5. If no match (<40%):            │
+        │    → Suggest new chapter          │
+        └───────────────────────────────────┘
+                        ↓
+        Present suggestion to user
+                        ↓
+        User accepts → /book move-entry
+        User declines → Entry stays unassigned
+```
+
+### Suggestion Output
+
+After entry creation, display:
+
+```
+## Chapter Suggestion
+
+Based on time period ("[time_period]") and themes ([themes]),
+this entry could fit in:
+
+**Best match**: "The League Years" (Part III: Digital Worlds)
+  - Time period: ✓ matches
+  - Themes: nostalgia, gaming (2/3 match)
+
+Would you like to:
+[ ] Add to "The League Years"
+[ ] Create a new chapter in Part III
+[ ] Leave unassigned for now
+```
+
+### Rules
+
+1. **Never force assignment** - User always decides
+2. **Offer multiple options** when matches are close
+3. **Suggest new chapter** when entry doesn't fit existing ones
+4. **Skip suggestion** for entries marked `unassignable: true`
+5. **Respect user preference** - If they skip, don't re-suggest
+
+---
+
 ## Auto-Organization Algorithm
 
 When 5+ entries exist, suggest structure:

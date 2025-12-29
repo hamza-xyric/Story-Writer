@@ -1,130 +1,201 @@
 # Life Story System - Next Steps
 
-**Last Updated**: 2024-12-25
-**Current Phase**: Book Generation Complete, Continuous Improvement
+**Last Updated**: 2024-12-29
+**Current Focus**: CLI Infrastructure Complete → Content Capture or App Development
 
 ---
 
-## Vision Recap
+## Two Paths Forward
 
-A personal memoir system where you can:
-- Capture memories through freeform writing, conversation, or voice
-- Have AI learn your voice and act as your ghostwriter
-- View your story through multiple lenses (timeline, characters, themes)
-- Eventually compile into a printable book
+You can now either:
 
----
-
-## What's Done
-
-### Personalization & Input (Complete)
-
-- [x] Voice profile schema (vocabulary, narrative, sensory patterns)
-- [x] Voice capture pipeline (runs after every entry)
-- [x] Ghostwriter mode (generates prose in your voice)
-- [x] Sensitivity detection and handling
-- [x] Session memory and continuity
-- [x] Freeform capture (`/freeform`)
-- [x] Biographer conversation (`/biographer`)
-- [x] Voice capture workflow (`/voice`)
-- [x] Draft processor (`/process`)
-
-### Book Generation (Complete - 2024-12-25)
-
-- [x] LIFE-21: Chapter Generator - tested and working
-- [x] LIFE-22: Prose Polisher - tested and working
-- [x] LIFE-23: Export Manager - PDF/EPUB/HTML working
-- [x] Voice baseline established (emerging patterns identified)
-- [x] First exports generated (PDF via weasyprint)
-
-### Viewer App (Complete)
-
-- [x] 10 views: EntryBrowser, Characters, Locations, Timeline, etc.
-- [x] D3.js visualizations
-- [x] Search with Fuse.js
-- [x] Data loading from story-data/
-
----
-
-## What's Next
-
-### Continuous Improvement
-
-The system is now complete. The main focus is:
-
-1. **Capture more content** - Build the voice profile with more entries
-2. **Track voice profile growth** - Patterns will become confirmed (5+ occurrences)
-3. **Regenerate chapters** - As voice improves, regenerate for higher fidelity
-
-### Viewer Enhancements (Optional)
-
-| Enhancement | Priority | Description |
-|-------------|----------|-------------|
-| Locations detail panel | High | Add detail view matching Characters |
-| Relationship quality display | Medium | Show connection strength |
-| Thematic threads visualization | Medium | Display book's thematic_threads |
-| Search faceting | Low | Filter by type, theme, date |
-
-### Future Features
-
-**When ready**:
-- Weekly prompts (like Storyworth)
-- Photo-based memory prompts (like Remento)
-- Voice model training for better personalization
-- Audiobook generation
-
----
-
-## Immediate Next Action
-
-**Start capturing memories** to grow the voice profile. The more entries, the better the ghostwriter score.
-
-### To Capture
+### Path A: Capture More Content (Recommended)
+Use the CLI to add memories. The infrastructure is ready.
 
 ```
-/freeform     → Just dump thoughts, no questions
-/biographer   → AI asks questions like a patient interviewer
-/journal      → Daily reflections with memory bridges
+/freeform     → Dump thoughts without questions
+/biographer   → AI guides you through memories (now with lead suggestions!)
+/journal      → Daily reflections
+/process      → Turn drafts into entries
 ```
 
-### Voice Profile Milestones
+**Why this matters**: Voice profile needs 5+ entries to confirm patterns. Currently at 2 entries.
 
-| Entries | Expected Outcome |
-|---------|------------------|
-| 5 | First confirmed patterns (score ~0.85) |
-| 10 | 10-15 confirmed patterns (score ~0.90) |
-| 25 | Full voice profile (score 0.95+) |
-
-### Technical Notes
-
-- PDF exports use weasyprint (XeLaTeX not installed)
-- EPUB and HTML exports use Pandoc directly
-- Viewer app runs from `/storyai-app/`
+### Path B: Build App Features
+Develop the storyai-app viewer into a full capture tool.
 
 ---
 
-## Success Criteria
+## CLI Layer: Complete ✅
 
-The system is successful when:
+All capture and processing skills are implemented and tested:
 
-- [x] Memories can be captured effortlessly (any mode) ✓
-- [ ] AI generates prose that sounds like Hamza (improving with each entry)
-- [x] Stories can be viewed by timeline, character, theme ✓
-- [x] Relationships between people/places are visualized ✓
-- [x] A book can be generated from entries ✓
-- [ ] The whole life is recorded (ongoing)
+| Skill | Command | Status |
+|-------|---------|--------|
+| Freeform Capture | `/freeform` | ✅ Active |
+| Biographer Mode | `/biographer` | ✅ Active + Leads Integration |
+| Voice Capture | `/voice` | ✅ Active |
+| Journal Capture | `/journal` | ✅ Active |
+| Draft Processing | `/process` | ✅ Active |
+| Entry Expansion | "Add more to [entry]" | ✅ Active |
+| Transcript Mining | `/transcript` | ✅ Active |
+| Data Health | `/health` | ✅ Active (18 rules) |
+
+**Recent Improvements (v2.8):**
+- LIFE-30: Expanded from 8 to 18 integrity rules
+- LIFE-35: Unified Data Health Report (LIFE-30 + LIFE-04)
+- `/health` command replaces `/consistency-check`
+- New rule categories: Question Bank, Relationships, Narrative
+
+**v2.7 Improvements:**
+- LIFE-01: Expansion mode for deepening existing entries
+- LIFE-13: Leads integration for biographer session suggestions
+- LIFE-20: Auto-suggests chapter placement after entry creation
+- LIFE-41: Detects casual trading mentions
 
 ---
 
-## Research Sources
+## Missing CLI Skills (Phase 3)
 
-Tools that inspired this system:
-- [Life Story AI](https://life-story.ai/) - Conversational biographer
-- [Storyworth](https://welcome.storyworth.com/storyteller) - Weekly prompts
-- [Remento](https://www.remento.co/) - Photo-based prompts
-- [Life Memoirs AI](https://www.lifememoirs.ai/) - Multi-format output
-- [StoriedLife](https://www.storiedlife.ai/) - AI memoir creation
+These skills are referenced but not implemented:
+
+| Skill | Purpose | When Needed |
+|-------|---------|-------------|
+| LIFE-03 | Timeline Builder | When organizing entries chronologically |
+| LIFE-06 | Theme Tracker | When grouping entries by theme |
+| LIFE-09 | Story Connector | When linking related entries |
+
+**When to implement**: After 5+ entries exist to have meaningful data to organize.
 
 ---
 
-*Next Steps v3.0 | 2024-12-25*
+## App Development Roadmap
+
+The storyai-app is currently a **read-only viewer**. Development phases to make it a full capture tool:
+
+### Phase 1: Capture Foundation
+| Task | Route | Status |
+|------|-------|--------|
+| Freeform Capture | `/capture/freeform` | ⏳ Pending |
+| Journal Capture | `/capture/journal` | ⏳ Pending |
+| Draft Management | `/drafts` | ⏳ Pending |
+| Entry Editing | EntryReader edit mode | ⏳ Pending |
+
+### Phase 2: Engagement & Progress
+| Task | Component | Status |
+|------|-----------|--------|
+| Dashboard | `/dashboard` | ⏳ Pending |
+| Daily Prompts | DailyPrompt.tsx | ⏳ Pending |
+| "On This Day" | OnThisDay.tsx | ⏳ Pending |
+| Streak Indicator | StreakIndicator.tsx | ⏳ Pending |
+
+### Phase 3: Voice Profile Display
+| Task | Route | Status |
+|------|-------|--------|
+| Voice Profile Page | `/voice` | ⏳ Pending |
+| Learning Progress | VoiceProgress.tsx | ⏳ Pending |
+
+### Phase 4: Book Export
+| Task | Component | Status |
+|------|-----------|--------|
+| Book Preview | BookPreview.tsx | ⏳ Pending |
+| Real PDF/EPUB | ExportModal enhanced | ⏳ Pending |
+
+### Phase 5: Advanced Capture
+| Task | Route | Status |
+|------|-------|--------|
+| Biographer Mode | `/capture/biographer` | ⏳ Pending |
+| Voice Recording | `/capture/voice` | ⏳ Pending |
+| Onboarding Flow | `/onboarding` | ⏳ Pending |
+
+---
+
+## Data Gaps to Fill
+
+### Characters Mentioned But Not Profiled
+From journals and transcripts:
+- Rabia (romantic)
+- Omer (friend)
+- Tabish (friend)
+- Owais (friend)
+- Bilal (friend)
+- Umer Sadiq (colleague?)
+- Driexor (business)
+
+### Leads from Transcript T-2025-001
+6 unexplored story threads:
+1. Salman & Zishan (Xyric developers)
+2. Gitex conference experience
+3. "Slavery Mindset" philosophy
+4. Teaching/mentoring role
+5. Speed/impatience trait
+6. [See leads.md for details]
+
+### Life Periods With No Entries
+- Childhood
+- School years
+- University
+- Early career
+
+---
+
+## Technical Decisions Made
+
+### CLI vs App Capture
+- **CLI**: Primary capture tool (works now)
+- **App**: Read-only viewer → future capture tool
+
+### Engagement Tone
+- Subtle & gentle (not Duolingo-style gamification)
+- No shame for missing days
+- Celebrate milestones quietly
+
+### Voice Learning
+- Patterns: emerging (1-2x) → growing (3-4x) → confirmed (5+x)
+- Ghostwriter only uses confirmed patterns
+- Fidelity target: 0.90+
+
+---
+
+## Quick Reference
+
+### Start a Session
+```
+1. Read CLAUDE.md (session instructions)
+2. Check leads.md (exploration suggestions)
+3. Choose capture mode:
+   /freeform   → No questions, just write
+   /biographer → Guided exploration
+   /journal    → Today's reflections
+```
+
+### End a Session
+```
+1. Run /health (if data modified)
+2. Rules 1-8 (Critical) MUST pass
+3. Rules 9-18 are noted for future attention
+4. State "Data integrity verified"
+```
+
+### Expand an Entry
+```
+"I want to add more to [entry name]"
++ Share your thoughts
+→ Claude merges content, updates metadata
+```
+
+---
+
+## Success Metrics
+
+| Metric | Current | Target |
+|--------|---------|--------|
+| Entries | 2 | 10+ for meaningful patterns |
+| Word Count | ~911 | 80,000 (book target) |
+| Confirmed Patterns | 0 | 5+ for ghostwriter |
+| Fidelity Score | Untested | 0.90+ |
+| Life Phases Covered | 2 | 6+ |
+
+---
+
+*Next Steps v5.1 | 2024-12-29*

@@ -139,16 +139,54 @@ word_count: 234
 
 ### After AI Analysis (appended automatically)
 
+Two formats are supported (parser handles both):
+
+**Format A** (bulleted headers with indented content):
 ```markdown
 ---
 
 ## AI Notes
 
-- Memory triggers: college, late nights, debugging
-- Suggested: /biographer "college debugging sessions"
-- Added to question bank: "What were those college nights like?"
-- Connections: friends/trinkhalm (similar late-night vibes)
+- **Memory triggers detected:**
+  - **Rabia** - Dream surfaced complex feelings. Could explore more when ready.
+  - **Bilal, Owais** - Friends you haven't spoken to in a while.
+
+- **Suggested exploration:**
+  - The dream about Rabia - what was it like before things changed?
+  - When was the last time you spoke to Bilal?
+
+- **Added to question bank:**
+  - Tell me about Rabia - who was she to you?
+  - What do those friendships mean?
+
+- **Connections:**
+  - Characters: Rabia, Bilal (friend), Owais (friend)
+  - Themes: friendship, processing past relationships
 ```
+
+**Format B** (non-bulleted headers with non-indented content):
+```markdown
+---
+
+## AI Notes (Entry 2)
+
+**Memory triggers detected:**
+
+- **Rabia** - The girl you were "1000% convinced" you'd marry.
+- **Syed Umer** - Something happened that shocked everyone.
+
+**Suggested exploration:**
+
+- What happened with Rabia?
+- Tell me about Syed Umer.
+
+**Connections:**
+
+- Characters: Rabia (past relationship), Syed Umer
+- Themes: moving on, relationships
+```
+
+**Important**: The storyai-app parser extracts nested content under each section header. Both formats work correctly.
 
 ### After Review (enriched when revisiting)
 
@@ -221,9 +259,79 @@ User can:
 ### File Naming
 
 ```
-YYYY-MM-DD.md                  # One journal per day
-YYYY-MM-DD-2.md               # If multiple sessions same day
+YYYY-MM-DD.md                  # One journal per day (can contain multiple entries)
 ```
+
+---
+
+## Multi-Entry Journals
+
+A single journal file can contain **multiple entries** for the same day. This happens when the user journals multiple times.
+
+### When This Occurs
+
+- User journals in the morning, then again at night
+- User adds continuation to same day's journal
+- Multiple capture sessions for same date
+
+### Format
+
+**Frontmatter** includes `entries_count` to track:
+
+```yaml
+---
+journal_id: J-2025-002
+journal_date: 2025-12-27
+mood: "happy → reflective, tired"
+entries_count: 2                     # Number of entries in this file
+captured_at: 2025-12-27T03:00:00
+updated_at: 2025-12-28T03:35:00     # When last entry was added
+word_count: 1050                     # Total across all entries
+---
+```
+
+**Content structure**:
+
+```markdown
+[First entry content - this is Entry 1]
+
+---
+
+## AI Notes
+
+[AI analysis for Entry 1]
+
+---
+
+## Entry 2: 3:35 AM (Late Night Continuation)
+
+[Second entry content]
+
+---
+
+## AI Notes (Entry 2)
+
+[AI analysis for Entry 2]
+
+---
+
+*Journal: 2025-12-27 | 2 entries | ~1050 words total*
+```
+
+### Key Rules
+
+1. **First entry** has no header - it's the content before any `## Entry N:` section
+2. **Subsequent entries** start with `## Entry N: timestamp (optional description)`
+3. **AI Notes per entry** use format `## AI Notes (Entry N)` for entries 2+
+4. **`entries_count`** in frontmatter MUST match actual entries (Integrity Rule 19)
+5. **`updated_at`** tracks when the latest entry was added
+
+### App Display
+
+The storyai-app displays multi-entry journals with:
+- **Tabs** for each entry (e.g., "Entry 1", "Entry 2 (3:35 AM)")
+- Entry-specific AI Notes shown when that tab is active
+- Combined stats (total words, all triggers) in the header
 
 ---
 
@@ -453,4 +561,5 @@ AI: "Creating a draft from that memory seed...
 
 ---
 
-*Skill LIFE-16 v1.0 | Life Story System | 2024-12-25*
+*Skill LIFE-16 v1.2 | Life Story System | 2024-12-29*
+*v1.2: Documented both AI Notes formats (Format A and B) for parser compatibility*

@@ -1,16 +1,16 @@
-# LIFE-31: Auto-Sync Word Counts
+# LIFE-31: Auto-Sync
 
 **Skill ID**: LIFE-31
 **Category**: Life Story / Data Integrity
-**Priority**: High
-**Version**: 1.0
-**Last Updated**: 2024-12-25
+**Priority**: Critical
+**Version**: 2.0
+**Last Updated**: 2024-12-28
 
 ---
 
 ## Purpose
 
-Automatically recalculate and update word counts across all levels (entry, chapter, section, book) to ensure consistency. Runs silently after data modifications, or manually via command.
+Automatically sync bidirectional references AND word counts across all entities. Runs after data modifications to maintain integrity per Rules 1-8 (Critical) in `story-data/context/data-standards.md`.
 
 ---
 
@@ -20,13 +20,12 @@ Automatically recalculate and update word counts across all levels (entry, chapt
 - After LIFE-01 processes an entry
 - After LIFE-20 creates/modifies chapters
 - After LIFE-21 generates prose
-- After any entry is moved between chapters
+- After any entry/chapter/character/location is modified
 
 **Manual Invocation**:
 ```
-/sync-counts
-"Update all word counts"
-"Recalculate word counts"
+/sync-counts   → Word count sync only
+/sync          → Full sync (references + word counts)
 ```
 
 **Related Skills**:
@@ -34,240 +33,253 @@ Automatically recalculate and update word counts across all levels (entry, chapt
 |-------|-------------|
 | LIFE-01 | Triggers sync after entry processing |
 | LIFE-20 | Triggers sync after chapter creation |
-| LIFE-21 | Triggers sync after prose generation |
-| LIFE-30 | Run after sync to verify consistency |
+| LIFE-30 | Run after sync to verify consistency (18 rules) |
+| LIFE-35 | Unified health report combining LIFE-30 + LIFE-04 |
 
 ---
 
-## Sync Process
+## Two Sync Types
+
+### 1. Reference Sync (Bidirectional Links)
+
+Updates all bidirectional references between entities.
+
+### 2. Word Count Sync
+
+Recalculates and cascades word counts from entries → chapters → books.
+
+---
+
+## Reference Sync Process
+
+### Entry → Character Sync
+
+When an entry references a character:
+```
+1. For each character_id in entry.characters[]:
+   a. Read character file
+   b. If entry_id not in character.entries_featured[]:
+      - Add entry_id to entries_featured[]
+      - Save character file
+```
+
+When a character is removed from entry:
+```
+1. For removed character_id:
+   a. Read character file
+   b. Remove entry_id from entries_featured[]
+   c. Save character file
+```
+
+### Entry → Location Sync
+
+Same pattern as Entry → Character:
+```
+1. For each location_id in entry.locations[]:
+   a. Read location file
+   b. If entry_id not in location.entries_featured[]:
+      - Add entry_id
+      - Save location file
+```
+
+### Entry → Chapter Sync
+
+When an entry is assigned to a chapter:
+```
+1. Set entry.chapter_id = chapter_id
+2. If entry_id not in chapter.entries[]:
+   - Add entry_id to chapter.entries[]
+   - Save chapter file
+3. If entry previously in different chapter:
+   - Remove from old chapter.entries[]
+   - Save old chapter file
+```
+
+When updating from chapter side:
+```
+1. For each entry_id in chapter.entries[]:
+   a. Read entry file
+   b. If entry.chapter_id != chapter_id:
+      - Set entry.chapter_id = chapter_id
+      - Save entry file
+```
+
+### Chapter → Book Sync
+
+When a chapter's book changes:
+```
+1. Set chapter.book_id = book_id
+2. Verify chapter_id in book.life_phases[].chapters[]
+3. If not found, add to appropriate phase
+```
+
+---
+
+## Word Count Sync Process
 
 ### Level 1: Entry Word Counts
 
-**Rule**: Count words in content section only.
-
-**What to Count**:
-- Main content (after frontmatter `---`, before `## AI Notes`)
-- Include headings in content area
-- Include markdown formatting text
-
-**What to Exclude**:
-- YAML frontmatter
-- `## AI Notes` section and everything after
-- Footer metadata line
+**Rule**: Count from H1 title to `## AI Notes` or `---` before AI Notes.
 
 **Algorithm**:
 ```
 1. Read entry file
-2. Split at frontmatter end (---)
-3. Split at "## AI Notes" if present
-4. Extract content section
-5. Strip markdown links/images but keep text
-6. Count words (split on whitespace)
-7. Update frontmatter word_count if different
+2. Find content between frontmatter end and "## AI Notes"
+3. Strip markdown formatting characters
+4. Count words (split on whitespace)
+5. Update word_count in frontmatter (exact match required)
 ```
 
-**Example**:
-```markdown
----
-word_count: 548  # This field gets updated
----
-
-# Title
-
-Content here gets counted...
-More content...
-
----
-## AI Notes
-This section is NOT counted
-```
-
-### Level 2: Chapter Section Word Counts
+### Level 2: Section Word Counts
 
 **Rule**: Section word count = sum of entries in that section.
 
-**Algorithm**:
 ```
-For each chapter:
-  For each section in chapter.sections:
-    section_entries = entries matching section.entries[]
-    section.word_count = sum(entry.word_count for entry in section_entries)
+For each section in chapter.sections[]:
+  section.word_count = sum(entry.word_count for entry_id in section.entries[])
 ```
 
 ### Level 3: Chapter Word Counts
 
-**Rule**: Chapter word count = sum of all linked entry word counts.
+**Rule**:
+- If prose exists: count prose in `## Prose Draft` section
+- If no prose: sum of entry word counts
 
-**Algorithm**:
 ```
 For each chapter:
-  chapter_entries = entries matching chapter.entries[]
-  chapter.current_word_count = sum(entry.word_count for entry in chapter_entries)
+  if chapter has prose draft content:
+    chapter.current_word_count = prose_word_count
+  else:
+    chapter.current_word_count = sum(entry.word_count for entry in chapter.entries[])
 ```
-
-**Note**: If chapter has its own prose content (not from entries), that should also be counted. Look for content after frontmatter that isn't placeholder text.
 
 ### Level 4: Book Word Counts
 
 **Rule**: Book word count = sum of all chapter word counts.
 
-**Algorithm**:
 ```
 For each book:
-  book_chapters = chapters matching book.life_phases[].chapters[]
-  book.current_word_count = sum(chapter.current_word_count for chapter in book_chapters)
+  book.current_word_count = sum(chapter.current_word_count for all chapters)
 ```
+
+### Sync Order
+
+Always sync in this order:
+1. Entry word counts (source of truth)
+2. Section word counts
+3. Chapter word counts
+4. Book word counts
 
 ---
 
 ## Output Modes
 
-### Silent Mode (Default for Automatic)
+### Silent Mode (Automatic)
 
-No output unless errors. Used when triggered by other skills.
+No output unless errors. Internal logging only.
 
-```
-# Internal logging only
-[SYNC] Entry E-2024-002: 548 (unchanged)
-[SYNC] Chapter C-001-03-01: 289 → 548 (updated)
-[SYNC] Book B-001: 636 → 807 (updated)
-```
-
-### Verbose Mode (Manual Invocation)
-
-Full report of changes.
+### Verbose Mode (Manual `/sync`)
 
 ```markdown
-## Word Count Sync Complete
+## Sync Complete
 
-### Entries
-- E-2024-001: 259 words (unchanged)
-- E-2024-002: 548 words (unchanged)
+### Reference Updates
+- Entry E-2024-002 → Character friends/trinkhalm: already synced
+- Entry E-2024-001 → Chapter C-001-06-01: already synced
 
-### Chapters
-- C-001-03-01: 289 → 548 (updated)
-- C-001-06-01: 259 (unchanged)
-
-### Books
-- B-001: 636 → 807 (updated)
+### Word Count Updates
+| Entity | Previous | Current | Change |
+|--------|----------|---------|--------|
+| E-2024-001 | 347 | 333 | -14 |
+| E-2024-002 | 548 | 527 | -21 |
+| C-001-06-01 | 456 | 384 | -72 |
+| C-001-03-01 | 548 | 527 | -21 |
+| B-001 | 895 | 911 | +16 |
 
 ---
 
 **Summary**:
-- 2 entries verified
-- 1 chapter updated
-- 1 book updated
-- All word counts are now consistent
+- 2 entries synced
+- 2 chapters synced
+- 1 book synced
+- All references verified
+- All word counts accurate
 ```
 
 ---
 
-## File Update Process
+## Triggered After Specific Actions
 
-### Updating Frontmatter
+### After LIFE-01 (Entry Saved)
 
-When updating a file's word count:
+```
+1. Calculate entry.word_count
+2. For each character in entry.characters[]:
+   - Add entry to character.entries_featured[]
+3. For each location in entry.locations[]:
+   - Add entry to location.entries_featured[]
+4. If entry.chapter_id set:
+   - Verify entry in chapter.entries[]
+   - Recalculate chapter.current_word_count
+   - Recalculate book.current_word_count
+```
 
-1. Read entire file
-2. Parse YAML frontmatter
-3. Update relevant field (`word_count` or `current_word_count`)
-4. Serialize frontmatter back to YAML
-5. Reconstruct file with new frontmatter + original content
-6. Write file
+### After Entry Assigned to Chapter
 
-**Preserve**:
-- All other frontmatter fields
-- All content after frontmatter
-- File formatting and line endings
+```
+1. Set entry.chapter_id
+2. Add entry to chapter.entries[]
+3. Recalculate chapter.current_word_count
+4. Recalculate book.current_word_count
+```
 
-### Update Order
+### After Chapter Created/Modified
 
-Always sync in this order:
-1. Entries first (source of truth)
-2. Sections second
-3. Chapters third
-4. Books last
+```
+1. For each entry in chapter.entries[]:
+   - Verify entry exists
+   - Set entry.chapter_id to this chapter
+2. Recalculate current_word_count
+3. Recalculate book.current_word_count
+```
 
-This ensures each level has accurate data from the level below.
+### After Character/Location Modified
+
+```
+1. For each entry in entries_featured[]:
+   - Verify entry exists
+   - Verify this entity is in entry's reference array
+```
 
 ---
 
 ## Edge Cases
 
 ### Entry Not Found
-If a chapter references an entry that doesn't exist:
 - Log warning
-- Skip that entry in calculation
-- Don't fail the sync
+- Skip in calculation
+- Don't fail sync
 
-### Empty Chapter
-If a chapter has no entries:
-- Set `current_word_count: 0`
-- Continue normally
+### Orphaned Reference
+- If character.entries_featured[] references non-existent entry:
+  - Remove from entries_featured[]
+  - Log warning
 
-### Missing Frontmatter Field
-If `word_count` or `current_word_count` field is missing:
-- Add the field with calculated value
-
-### Section Without Entries
-If a section has no entries:
-- Set `word_count: 0`
-
----
-
-## Integration with Other Skills
-
-### After LIFE-01 (Entry Processor)
-```
-When LIFE-01 saves an entry:
-1. Calculate and set entry word_count
-2. If entry is assigned to a chapter:
-   - Update chapter current_word_count
-   - Update section word_count if applicable
-   - Update book current_word_count
-```
-
-### After LIFE-20 (Book Architect)
-```
-When LIFE-20 assigns entries to chapters:
-1. Recalculate chapter current_word_count
-2. Recalculate section word_counts
-3. Recalculate book current_word_count
-```
-
-### After LIFE-21 (Chapter Generator)
-```
-When LIFE-21 generates prose:
-1. Calculate prose word count
-2. Add to chapter current_word_count
-3. Update book current_word_count
-```
-
----
-
-## Validation
-
-After sync completes, optionally verify:
-```
-For each level:
-  stored_value = read from file
-  calculated_value = compute from children
-  assert stored_value == calculated_value
-```
-
-If verification fails, log error but don't loop infinitely.
+### Missing Field
+- If word_count field missing: add with calculated value
+- If chapter_id missing: leave null (entry not assigned)
 
 ---
 
 ## Success Criteria
 
-- All entry word_counts reflect actual content
-- All chapter current_word_counts equal sum of entry word_counts
-- All section word_counts equal sum of section entry word_counts
-- All book current_word_counts equal sum of chapter word_counts
-- Updates happen automatically without user intervention
-- Manual sync provides clear report of changes
+After sync:
+- All bidirectional references match (Rule 1-6)
+- All word counts are exact (Rule 7, 0 tolerance)
+- Section entries subset matches chapter entries (Rule 8)
+
+Run LIFE-30 after sync to verify.
 
 ---
 
-*Skill LIFE-31 v1.0 | Life Story System | 2024-12-25*
+*Skill LIFE-31 v2.1 | Life Story System | 2024-12-29*

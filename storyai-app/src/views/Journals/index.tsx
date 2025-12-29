@@ -7,7 +7,7 @@ import { PageHeader } from '../../components/layout';
 import { Card, Tag } from '../../components/primitives';
 import { useJournals } from '../../data';
 import { cn } from '../../utils';
-import type { Journal } from '../../types';
+import type { Journal, JournalAINotes } from '../../types';
 
 // Mood colors
 const moodColors: Record<string, string> = {
@@ -209,7 +209,11 @@ function Calendar({ journals, selectedDate, onSelectDate, currentMonth, onChange
       {/* Calendar grid */}
       <div className="grid grid-cols-7 gap-1">
         {calendarDays.map((date, i) => {
-          const dateStr = date.toISOString().split('T')[0];
+          // Format date in local time (YYYY-MM-DD) to avoid timezone issues
+          const year = date.getFullYear();
+          const month = String(date.getMonth() + 1).padStart(2, '0');
+          const day = String(date.getDate()).padStart(2, '0');
+          const dateStr = `${year}-${month}-${day}`;
           const journal = journalsByDate.get(dateStr);
           const isCurrentMonth = date.getMonth() === currentMonth.getMonth();
           const isToday = date.getTime() === today.getTime();
@@ -252,7 +256,63 @@ interface JournalReaderProps {
   journal: Journal;
 }
 
+// AI Notes display component
+function AINotesSection({ aiNotes }: { aiNotes: JournalAINotes }) {
+  const hasContent =
+    aiNotes.memory_triggers.length > 0 ||
+    aiNotes.suggested_exploration.length > 0 ||
+    aiNotes.connections.length > 0;
+
+  if (!hasContent) return null;
+
+  return (
+    <div className="mt-6 pt-6 border-t border-[var(--color-border-subtle)]">
+      <details className="group">
+        <summary className="cursor-pointer text-sm font-medium text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]">
+          AI Notes
+        </summary>
+        <div className="mt-3 space-y-3 text-sm text-[var(--color-text-muted)]">
+          {aiNotes.memory_triggers.length > 0 && (
+            <div>
+              <span className="font-medium">Memory triggers:</span>
+              <ul className="list-disc list-inside mt-1">
+                {aiNotes.memory_triggers.map((trigger, i) => (
+                  <li key={i}>{trigger}</li>
+                ))}
+              </ul>
+            </div>
+          )}
+          {aiNotes.suggested_exploration.length > 0 && (
+            <div>
+              <span className="font-medium">Suggested exploration:</span>
+              <ul className="list-disc list-inside mt-1">
+                {aiNotes.suggested_exploration.map((suggestion, i) => (
+                  <li key={i}>{suggestion}</li>
+                ))}
+              </ul>
+            </div>
+          )}
+          {aiNotes.connections.length > 0 && (
+            <div>
+              <span className="font-medium">Connections:</span>
+              <ul className="list-disc list-inside mt-1">
+                {aiNotes.connections.map((connection, i) => (
+                  <li key={i}>{connection}</li>
+                ))}
+              </ul>
+            </div>
+          )}
+        </div>
+      </details>
+    </div>
+  );
+}
+
 function JournalReader({ journal }: JournalReaderProps) {
+  const [activeTab, setActiveTab] = useState(0);
+  const hasMultipleEntries = journal.entries && journal.entries.length > 1;
+  const activeEntry = journal.entries?.[activeTab];
+
   return (
     <Card className="p-6">
       {/* Header */}
@@ -316,53 +376,43 @@ function JournalReader({ journal }: JournalReaderProps) {
         )}
       </div>
 
-      {/* Content */}
-      <div className="prose prose-invert max-w-none">
-        <ReactMarkdown remarkPlugins={[remarkGfm]}>{journal.content}</ReactMarkdown>
-      </div>
-
-      {/* AI Notes */}
-      {journal.ai_notes && (
-        <div className="mt-6 pt-6 border-t border-[var(--color-border-subtle)]">
-          <details className="group">
-            <summary className="cursor-pointer text-sm font-medium text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]">
-              AI Notes
-            </summary>
-            <div className="mt-3 space-y-3 text-sm text-[var(--color-text-muted)]">
-              {journal.ai_notes.memory_triggers.length > 0 && (
-                <div>
-                  <span className="font-medium">Memory triggers:</span>
-                  <ul className="list-disc list-inside mt-1">
-                    {journal.ai_notes.memory_triggers.map((trigger, i) => (
-                      <li key={i}>{trigger}</li>
-                    ))}
-                  </ul>
-                </div>
+      {/* Entry Tabs (only show if multiple entries) */}
+      {hasMultipleEntries && (
+        <div className="mb-4 flex gap-1 border-b border-[var(--color-border-subtle)]">
+          {journal.entries.map((entry, i) => (
+            <button
+              key={i}
+              onClick={() => setActiveTab(i)}
+              className={cn(
+                'px-4 py-2 text-sm font-medium transition-colors rounded-t-lg',
+                'hover:bg-[var(--color-surface-tertiary)]',
+                activeTab === i
+                  ? 'bg-[var(--color-surface-secondary)] text-[var(--color-text-primary)] border-b-2 border-[var(--color-accent-terracotta)]'
+                  : 'text-[var(--color-text-muted)]'
               )}
-              {journal.ai_notes.suggested_exploration.length > 0 && (
-                <div>
-                  <span className="font-medium">Suggested exploration:</span>
-                  <ul className="list-disc list-inside mt-1">
-                    {journal.ai_notes.suggested_exploration.map((suggestion, i) => (
-                      <li key={i}>{suggestion}</li>
-                    ))}
-                  </ul>
-                </div>
+            >
+              Entry {entry.entryNumber}
+              {entry.timestamp && (
+                <span className="ml-1 text-xs opacity-70">({entry.timestamp})</span>
               )}
-              {journal.ai_notes.connections.length > 0 && (
-                <div>
-                  <span className="font-medium">Connections:</span>
-                  <ul className="list-disc list-inside mt-1">
-                    {journal.ai_notes.connections.map((connection, i) => (
-                      <li key={i}>{connection}</li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-            </div>
-          </details>
+            </button>
+          ))}
         </div>
       )}
+
+      {/* Content - show active entry or fallback to raw content */}
+      <div className="prose prose-invert max-w-none">
+        <ReactMarkdown remarkPlugins={[remarkGfm]}>
+          {activeEntry?.content || journal.content}
+        </ReactMarkdown>
+      </div>
+
+      {/* AI Notes - show entry-specific or journal-level */}
+      {activeEntry?.ai_notes ? (
+        <AINotesSection aiNotes={activeEntry.ai_notes} />
+      ) : journal.ai_notes ? (
+        <AINotesSection aiNotes={journal.ai_notes} />
+      ) : null}
 
       {/* Triggered memories */}
       {journal.triggered_memories.length > 0 && (
@@ -407,8 +457,12 @@ export function Journals() {
       .sort((a, b) => b[1] - a[1])
       .slice(0, 3);
 
+    // Count actual entries (a journal can have multiple entries per day)
+    const totalEntries = journals.reduce((sum, j) => sum + (j.entries?.length || 1), 0);
+
     return {
-      total: journals.length,
+      totalJournals: journals.length,  // Number of journal files/days
+      totalEntries,                    // Total individual entries across all journals
       totalWords: journals.reduce((sum, j) => sum + j.word_count, 0),
       withSeeds: journals.filter(j => j.book_worthy === 'seed' || j.book_worthy === 'yes' || j.book_worthy === 'maybe').length,
       promoted: journals.filter(j => j.promoted_to).length,
@@ -420,14 +474,14 @@ export function Journals() {
     <div className="space-y-6">
       <PageHeader
         title="Journals"
-        subtitle={`${stats.total} entries | ${stats.totalWords.toLocaleString()} words`}
+        subtitle={`${stats.totalJournals} days | ${stats.totalEntries} entries | ${stats.totalWords.toLocaleString()} words`}
       />
 
       {/* Stats cards */}
       <div className="grid grid-cols-4 gap-4">
         <Card className="p-4 text-center">
-          <div className="text-2xl font-bold text-[var(--color-text-primary)]">{stats.total}</div>
-          <div className="text-sm text-[var(--color-text-muted)]">Total Journals</div>
+          <div className="text-2xl font-bold text-[var(--color-text-primary)]">{stats.totalEntries}</div>
+          <div className="text-sm text-[var(--color-text-muted)]">Total Entries</div>
         </Card>
         <Card className="p-4 text-center">
           <div className="text-2xl font-bold text-[var(--color-text-primary)]">{stats.totalWords.toLocaleString()}</div>

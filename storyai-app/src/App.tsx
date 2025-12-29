@@ -13,6 +13,7 @@ import { Search } from './views/Search';
 import { Book } from './views/Book';
 import { ChapterReaderView } from './views/ChapterReader';
 import { Journals } from './views/Journals';
+import { Mind } from './views/Mind';
 
 export default function App() {
   return (
@@ -27,6 +28,7 @@ export default function App() {
             <Route path="/timeline" element={<Timeline />} />
             <Route path="/themes" element={<Themes />} />
             <Route path="/relationships" element={<Relationships />} />
+            <Route path="/mind" element={<Mind />} />
             <Route path="/book" element={<Book />} />
             <Route path="/book/read/:chapterId" element={<ChapterReaderView />} />
             <Route path="/journals" element={<Journals />} />

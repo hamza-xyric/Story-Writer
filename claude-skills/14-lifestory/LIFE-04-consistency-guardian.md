@@ -3,8 +3,8 @@
 **Skill ID**: LIFE-04
 **Category**: Life Story
 **Priority**: High
-**Version**: 1.0
-**Last Updated**: 2024-12-24
+**Version**: 1.1
+**Last Updated**: 2024-12-29
 
 ---
 
@@ -37,6 +37,8 @@ Check for contradictions, timeline impossibilities, and factual inconsistencies 
 | LIFE-02 | Validate character information |
 | LIFE-03 | Verify timeline coherence |
 | LIFE-05 | Turn inconsistencies into exploration prompts |
+| LIFE-30 | Rules 17-18 integrate LIFE-04 findings |
+| LIFE-35 | Orchestrates LIFE-04 into unified Data Health Report |
 
 ---
 
@@ -450,4 +452,71 @@ Not worth interrupting the user.
 
 ---
 
-*Skill LIFE-04 v1.0 | Life Story System | 2024-12-24*
+## LIFE-35 Export Format
+
+When LIFE-35 calls LIFE-04 for integration into the Data Health Report, provide output in this structured format:
+
+```yaml
+life04_export:
+  generated: "2024-12-29T12:00:00"
+  source: "/metadata/consistency-log.md"
+
+  summary:
+    total_issues: 3
+    critical: 0
+    clarify: 2
+    explore: 1
+    noted: 5
+
+  open_issues:
+    - id: "CON-2024-001"
+      severity: "CLARIFY"
+      type: "timeline"
+      entries: ["E-2024-002"]
+      description: "Time period 'late 2000s' conflicts with Season 3 mention (2013)"
+      detected: "2024-12-28"
+      status: "open"
+      suggested_action: "Verify time period with user"
+
+    - id: "CON-2024-002"
+      severity: "EXPLORE"
+      type: "character_trait"
+      character: "father"
+      entries: ["E-2024-003", "E-2024-007"]
+      description: "Described as both 'quiet' and 'loud singer'"
+      resolution: "Context-dependent (private vs home behavior)"
+      status: "acknowledged"
+
+  resolved_issues:
+    - id: "CON-2024-000"
+      resolved_date: "2024-12-25"
+      resolution: "User clarified both versions are accurate"
+
+  noted_variations:
+    - "Age approximations vary by 1-2 years in childhood memories"
+    - "House description varies (renovations occurred)"
+```
+
+### Integration with LIFE-30 Rules 17-18
+
+LIFE-30 Rules 17-18 read this export to:
+- **Rule 17**: Surface timeline issues from `open_issues` where `type: timeline`
+- **Rule 18**: Surface character consistency from `open_issues` where `type: character_trait`
+
+LIFE-35 deduplicates any overlap between Rules 17-18 findings and LIFE-04 export.
+
+### When Called by LIFE-35
+
+```
+LIFE-35: "Run narrative consistency check"
+LIFE-04:
+  1. Read /metadata/consistency-log.md
+  2. Parse open issues by severity
+  3. Format as life04_export YAML
+  4. Return to LIFE-35 for integration
+```
+
+---
+
+*Skill LIFE-04 v1.1 | Life Story System | 2024-12-29*
+*v1.1: Added LIFE-35 export format for unified Data Health Report integration*

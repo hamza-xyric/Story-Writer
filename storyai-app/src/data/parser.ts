@@ -1,13 +1,18 @@
 // Parsing utilities for markdown files with YAML frontmatter
 
 import matter from 'gray-matter';
-import type { Entry, Character, Location, AINotesSection, Book, Chapter, Journal, JournalAINotes } from '../types';
+import type { Entry, Character, Location, AINotesSection, Book, Chapter, Journal, JournalAINotes, JournalEntry } from '../types';
 
 // Convert date to ISO string format (handles Date objects from YAML)
+// Uses local time to avoid timezone issues
 function toDateString(value: unknown): string {
   if (!value) return '';
   if (value instanceof Date) {
-    return value.toISOString().split('T')[0]; // YYYY-MM-DD
+    // Use local time components to avoid UTC conversion issues
+    const year = value.getFullYear();
+    const month = String(value.getMonth() + 1).padStart(2, '0');
+    const day = String(value.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
   }
   if (typeof value === 'string') return value;
   return String(value);
@@ -248,6 +253,69 @@ export function parseChapter(raw: string, filePath: string): Chapter {
   };
 }
 
+// Extract nested bullets under a section header in AI Notes
+// Handles two formats:
+//
+// Format A (Entry 1 style - bulleted headers, indented content):
+// - **Memory triggers detected:**
+//   - **Rabia** - Content here...
+//
+// Format B (Entry 2 style - non-bulleted headers, non-indented content):
+// **Memory triggers detected:**
+// - **Rabia** - Content here...
+//
+function extractSectionBullets(aiNotesSection: string, headerPattern: RegExp): string[] {
+  const lines = aiNotesSection.split('\n');
+  const results: string[] = [];
+  let inSection = false;
+  let headerIsIndented = false;
+
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i];
+
+    // Check if this is the section header we're looking for
+    if (headerPattern.test(line)) {
+      inSection = true;
+      // Detect if header is bulleted (Format A) or not (Format B)
+      headerIsIndented = /^-\s*\*\*/.test(line.trim());
+      continue;
+    }
+
+    // If we're in the section, collect bullets
+    if (inSection) {
+      const trimmedLine = line.trim();
+
+      if (headerIsIndented) {
+        // Format A: Look for indented bullets (starts with spaces then -)
+        if (/^\s{2,}-/.test(line)) {
+          const bulletContent = line.replace(/^\s*-\s*/, '').trim();
+          if (bulletContent) {
+            results.push(bulletContent);
+          }
+        }
+        // Check if we've hit another top-level bulleted section header
+        else if (/^-\s*\*\*/.test(trimmedLine)) {
+          inSection = false;
+        }
+      } else {
+        // Format B: Look for non-indented bullets (line starts with -)
+        if (trimmedLine.startsWith('-')) {
+          const bulletContent = trimmedLine.replace(/^-\s*/, '').trim();
+          if (bulletContent) {
+            results.push(bulletContent);
+          }
+        }
+        // Check if we've hit another section header (bold text at start of line, not a bullet)
+        else if (/^\*\*[^*]+\*\*/.test(trimmedLine) && !trimmedLine.startsWith('-')) {
+          inSection = false;
+        }
+      }
+    }
+  }
+
+  return results;
+}
+
 // Extract journal AI Notes section from markdown content
 function extractJournalAINotes(content: string): JournalAINotes | undefined {
   const aiNotesMatch = content.match(/## AI Notes[\s\S]*?(?=---|\Z)/);
@@ -255,17 +323,11 @@ function extractJournalAINotes(content: string): JournalAINotes | undefined {
 
   const aiNotesSection = aiNotesMatch[0];
 
-  // Parse bullet points from AI Notes
-  const bullets = aiNotesSection
-    .split('\n')
-    .filter(line => line.trim().startsWith('-'))
-    .map(line => line.replace(/^-\s*/, '').trim());
-
   return {
-    memory_triggers: bullets.filter(b => b.toLowerCase().includes('memory trigger') || b.toLowerCase().includes('triggers:')).map(b => b.replace(/memory triggers?:?\s*/i, '')),
-    suggested_exploration: bullets.filter(b => b.toLowerCase().includes('suggested') || b.toLowerCase().includes('/biographer')),
-    added_to_question_bank: bullets.filter(b => b.toLowerCase().includes('question bank') || b.toLowerCase().includes('added to')),
-    connections: bullets.filter(b => b.toLowerCase().includes('connection') || b.toLowerCase().includes('similar')),
+    memory_triggers: extractSectionBullets(aiNotesSection, /^-\s*\*\*Memory triggers?( detected)?:?\*\*/i),
+    suggested_exploration: extractSectionBullets(aiNotesSection, /^-\s*\*\*Suggested exploration:?\*\*/i),
+    added_to_question_bank: extractSectionBullets(aiNotesSection, /^-\s*\*\*Added to question bank:?\*\*/i),
+    connections: extractSectionBullets(aiNotesSection, /^-\s*\*\*Connections?:?\*\*/i),
   };
 }
 
@@ -274,10 +336,114 @@ function cleanJournalContent(content: string): string {
   return content.replace(/---\s*## AI Notes[\s\S]*$/, '').trim();
 }
 
+// Extract AI Notes for a specific entry (handles "## AI Notes (Entry N)" format)
+function extractEntryAINotes(content: string, entryNumber: number): JournalAINotes | undefined {
+  // For entry 1, look for generic "## AI Notes" (not followed by "(Entry")
+  // For entry N, look for "## AI Notes (Entry N)"
+  let aiNotesMatch: RegExpMatchArray | null;
+
+  if (entryNumber === 1) {
+    // Match "## AI Notes" that's NOT followed by "(Entry" to get the first entry's notes
+    aiNotesMatch = content.match(/## AI Notes(?!\s*\(Entry)[\s\S]*?(?=---\s*## Entry|\Z|$)/);
+  } else {
+    // Match "## AI Notes (Entry N)" for subsequent entries
+    const pattern = new RegExp(`## AI Notes \\(Entry ${entryNumber}\\)[\\s\\S]*?(?=---|\\Z|$)`);
+    aiNotesMatch = content.match(pattern);
+  }
+
+  if (!aiNotesMatch) return undefined;
+
+  const aiNotesSection = aiNotesMatch[0];
+
+  return {
+    memory_triggers: extractSectionBullets(aiNotesSection, /^-?\s*\*\*Memory triggers?( detected)?:?\*\*/i),
+    suggested_exploration: extractSectionBullets(aiNotesSection, /^-?\s*\*\*Suggested exploration:?\*\*/i),
+    added_to_question_bank: extractSectionBullets(aiNotesSection, /^-?\s*\*\*(Added to )?question(s for the)? bank:?\*\*/i),
+    connections: extractSectionBullets(aiNotesSection, /^-?\s*\*\*Connections?:?\*\*/i),
+  };
+}
+
+// Parse multiple entries from journal content
+// Format: First content block is Entry 1, then "## Entry 2: timestamp", "## Entry 3: timestamp", etc.
+function parseJournalEntries(content: string): JournalEntry[] {
+  const entries: JournalEntry[] = [];
+
+  // Split by "## Entry N:" pattern (lookahead to keep the delimiter)
+  const entryPattern = /(?=## Entry \d+:)/;
+  const parts = content.split(entryPattern);
+
+  if (parts.length === 0) {
+    // No content at all
+    return [{
+      entryNumber: 1,
+      timestamp: null,
+      content: '',
+      ai_notes: undefined,
+    }];
+  }
+
+  // First part (before any "## Entry N:") is Entry 1
+  const firstPart = parts[0].trim();
+  if (firstPart) {
+    // Clean the first entry content (remove AI Notes section)
+    const cleanedFirst = firstPart.replace(/---\s*## AI Notes(?!\s*\(Entry)[\s\S]*$/, '').trim();
+    entries.push({
+      entryNumber: 1,
+      timestamp: null,  // First entry gets timestamp from frontmatter
+      content: cleanedFirst,
+      ai_notes: extractEntryAINotes(content, 1),
+    });
+  }
+
+  // Process subsequent entries (## Entry 2:, ## Entry 3:, etc.)
+  for (let i = 1; i < parts.length; i++) {
+    const part = parts[i];
+
+    // Extract entry number and timestamp from header
+    // Format: "## Entry 2: 3:35 AM (Late Night Continuation)"
+    const headerMatch = part.match(/## Entry (\d+):\s*(.+?)(?:\n|$)/);
+
+    if (headerMatch) {
+      const entryNumber = parseInt(headerMatch[1], 10);
+      const headerText = headerMatch[2].trim();
+
+      // Extract timestamp - look for time patterns like "3:35 AM", "10:00 PM"
+      const timeMatch = headerText.match(/(\d{1,2}:\d{2}\s*(?:AM|PM|am|pm)?)/i);
+      const timestamp = timeMatch ? timeMatch[1].trim() : null;
+
+      // Get content after the header, clean AI Notes section for this entry
+      const contentAfterHeader = part.substring(headerMatch[0].length);
+      const cleanedContent = contentAfterHeader
+        .replace(/---\s*## AI Notes \(Entry \d+\)[\s\S]*$/, '')
+        .trim();
+
+      entries.push({
+        entryNumber,
+        timestamp,
+        content: cleanedContent,
+        ai_notes: extractEntryAINotes(content, entryNumber),
+      });
+    }
+  }
+
+  // If no entries were parsed, create a default entry 1 with all content
+  if (entries.length === 0) {
+    entries.push({
+      entryNumber: 1,
+      timestamp: null,
+      content: cleanJournalContent(content),
+      ai_notes: extractJournalAINotes(content),
+    });
+  }
+
+  return entries;
+}
+
 // Parse journal from raw markdown
 export function parseJournal(raw: string, filePath: string): Journal {
   const { data, content } = matter(raw);
   const aiNotes = extractJournalAINotes(content);
+  const entries = parseJournalEntries(content);
 
   return {
     journal_id: data.journal_id || '',
@@ -291,6 +457,7 @@ export function parseJournal(raw: string, filePath: string): Journal {
     book_worthy: data.book_worthy || null,
     promoted_to: data.promoted_to || null,
     content: cleanJournalContent(content),
+    entries,
     ai_notes: aiNotes,
     filePath,
   };

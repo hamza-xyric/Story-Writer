@@ -39,6 +39,9 @@ Process raw story entries from Hamza, extracting metadata (time period, characte
 | LIFE-06 | Extract and track themes |
 | LIFE-31 | Sync word counts to parent chapter/book (silent) |
 | LIFE-32 | Validate entry data before save |
+| LIFE-40 | Dreams lens - domain-specific questions |
+| LIFE-41 | Trading lens - domain-specific questions |
+| LIFE-42 | Problems lens - domain-specific questions |
 
 ---
 
@@ -114,6 +117,33 @@ Contextual: Graduation → pride/excitement
 Conflicting: "Happy but scared..."
 ```
 
+#### Domain Detection
+
+Scan content for domain-specific signals and activate relevant lenses.
+
+**Available Domains:**
+
+| Domain | Lens | Detection Signals |
+|--------|------|-------------------|
+| dreams | LIFE-40 | dream, dreamt, nightmare, sleep, woke up |
+| trading | LIFE-41 | trade, market, position, profit, loss, chart |
+| problems | LIFE-42 | problem, stuck, frustrated, struggling, challenge |
+
+**Detection Process:**
+1. Scan content for domain keywords (case-insensitive)
+2. Verify signal is substantial (not passing mention)
+3. Add matching domains to `domains: []` array
+4. For each domain, invoke corresponding lens skill
+5. Collect domain-specific questions from each lens
+6. Merge lens questions into "Questions to Explore"
+
+**Multi-domain handling:**
+- An entry can match multiple domains (e.g., dreams + trading)
+- Each lens contributes 2-3 contextual questions
+- Questions are grouped by domain in output
+
+**Reference:** See `story-data/context/lenses.md` for full lens definitions.
+
 ### Phase 3: Generate Entry
 
 Create structured markdown file:
@@ -142,6 +172,7 @@ themes:
 emotion_tags:
   - nostalgia
   - joy
+domains: []  # Auto-detected: dreams, trading, problems
 completeness: partial
 writing_mode: freeform
 prompt_used: null
@@ -194,28 +225,206 @@ childhood-learning-to-ride.md     (period-based, no year)
 After saving entry:
 1. **LIFE-02**: Check if new characters need profiles
 2. **LIFE-03**: Add to timeline index
-3. **LIFE-05**: Ask 3-5 deepening questions
-4. **LIFE-06**: Update theme tracking
+3. **Domain Lenses**: For each detected domain, invoke lens skill:
+   - `dreams` → LIFE-40: Add dream-specific questions
+   - `trading` → LIFE-41: Add trading-specific questions
+   - `problems` → LIFE-42: Add problem-specific questions
+4. **LIFE-05**: Ask 3-5 deepening questions (after lenses)
+5. **LIFE-06**: Update theme tracking
+6. **LIFE-20**: Suggest chapter placement (if book structure exists)
 
-### Phase 6: Data Integrity (Automatic)
+### Phase 6: Data Integrity Verification (MANDATORY)
 
-After entry is saved, automatically sync word counts:
+**This phase is REQUIRED. Do not end the session without completing it.**
+
+After entry is saved, MUST complete all steps:
 
 ```
-1. LIFE-32: Validate entry data before save
-   - Verify entry_id format and uniqueness
-   - Calculate accurate word_count from content
-   - Auto-correct completeness level if needed
+1. WORD COUNT VERIFICATION
+   [ ] Recalculate word_count from actual content (H1 to ## AI Notes)
+   [ ] Update entry.word_count to exact match (0 tolerance)
 
-2. LIFE-31: Sync parent data (silent)
-   - If entry is assigned to a chapter:
-     - Recalculate chapter.current_word_count
-     - Recalculate section.word_count if applicable
-     - Recalculate book.current_word_count
-   - No output unless errors occur
+2. CHARACTER SYNC (LIFE-31)
+   [ ] For each character in entry.characters[]:
+       - Verify character file exists
+       - Add entry_id to character.entries_featured[] if missing
+
+3. LOCATION SYNC (LIFE-31)
+   [ ] For each location in entry.locations[]:
+       - Verify location file exists
+       - Add entry_id to location.entries_featured[] if missing
+
+4. CHAPTER SYNC (LIFE-31)
+   [ ] If entry.chapter_id is set:
+       - Verify chapter file exists
+       - Verify entry_id in chapter.entries[]
+       - Recalculate chapter.current_word_count
+       - Recalculate book.current_word_count
+
+5. VALIDATION (LIFE-32)
+   [ ] Verify entry_id format (E-YYYY-NNN)
+   [ ] Verify completeness matches word count
+   [ ] Verify all references resolve
 ```
 
-This ensures word counts stay consistent automatically without manual intervention.
+**Session cannot end until all boxes are checked.**
+
+See `story-data/context/data-standards.md` for all 18 Integrity Rules.
+
+---
+
+## Expansion Mode
+
+When the user wants to add more to an EXISTING entry (not create a new one), activate Expansion Mode.
+
+### When to Use Expansion Mode
+
+**Use Expansion when:**
+- User says "I want to add more to [entry]"
+- User answers questions from "Questions to Explore" in an entry
+- User shares additional details about the SAME memory moment
+- User wants to deepen or elaborate on existing content
+
+**Create NEW entry when:**
+- It's a genuinely different memory/event
+- The thought triggers a completely separate story
+- Different time period entirely
+- User explicitly wants a new entry
+
+### Expansion Workflow
+
+```
+User shares additional content about existing entry
+              |
+              v
++----------------------------+
+| 1. LOCATE ENTRY            |
+| - Find entry by ID or title|
+| - Read current content     |
+| - Note current word_count  |
++----------------------------+
+              |
+              v
++----------------------------+
+| 2. MERGE CONTENT           |
+| - Append new content below |
+|   existing prose           |
+| - Use section break (---)  |
+|   if topic shifts          |
+| - Preserve original voice  |
++----------------------------+
+              |
+              v
++----------------------------+
+| 3. UPDATE METADATA         |
+| - revisit_count += 1       |
+| - Recalculate word_count   |
+| - Update completeness if   |
+|   richer (brief→partial→   |
+|   detailed)                |
+| - Add new characters/      |
+|   locations if mentioned   |
++----------------------------+
+              |
+              v
++----------------------------+
+| 4. REFRESH QUESTIONS       |
+| - Remove answered questions|
+| - Generate new questions   |
+|   based on new content     |
+| - Re-run domain lenses     |
++----------------------------+
+              |
+              v
++----------------------------+
+| 5. DATA INTEGRITY (LIFE-31)|
+| - Sync new characters      |
+| - Sync new locations       |
+| - Update word count cascade|
++----------------------------+
+```
+
+### Expansion Merge Rules
+
+**Content Placement:**
+```markdown
+# [Original Title]
+
+[Original prose content - UNTOUCHED]
+
+---
+
+## Added [Date]
+
+[New content goes here]
+
+---
+
+## AI Notes
+[Updated questions and connections]
+```
+
+**Metadata Updates:**
+```yaml
+# Before expansion
+revisit_count: 0
+word_count: 333
+completeness: brief
+
+# After expansion
+revisit_count: 1
+word_count: 512  # Recalculated
+completeness: partial  # May upgrade if richer
+```
+
+### Completeness Upgrade Rules
+
+| From | To | Condition |
+|------|------|-----------|
+| brief | partial | Word count > 300 AND has sensory/emotional detail |
+| partial | detailed | Word count > 600 AND multiple aspects explored |
+
+### Question Handling
+
+**Questions answered by new content:**
+- Move to "Connections Found" with note: "Explored in revisit [date]"
+
+**New questions generated:**
+- Based on new content only
+- Don't duplicate existing unanswered questions
+
+### Example Expansion
+
+**User says:** "I want to add to the League entry - I remembered how Trinkhalm and I used to stay up until 4am on school nights."
+
+**Before:**
+```yaml
+revisit_count: 0
+word_count: 527
+completeness: detailed
+```
+
+**After:**
+```yaml
+revisit_count: 1
+word_count: 612
+completeness: detailed  # Already detailed, stays same
+```
+
+**New content merged:**
+```markdown
+---
+
+## Added 2024-12-28
+
+I just remembered - we used to stay up until 4am on school nights. The next day would be hell but we didn't care. Those late-night sessions were when we really perfected the combo. I'd set up the cards, he'd come in with Shaco boxes, and suddenly it's 3am and we're laughing about some ridiculous play.
+
+---
+```
+
+**Questions refreshed:**
+- Removed: "How did you and Trinkhalm meet?" (if answered)
+- Added: "What did your parents think about the 4am gaming sessions?"
 
 ---
 
@@ -399,6 +608,7 @@ Before saving an entry:
 - [ ] All mentioned people captured as characters
 - [ ] At least one theme identified
 - [ ] Emotion tags reflect the content
+- [ ] Domains detected and lens skills invoked
 - [ ] Completeness level accurately assessed
 - [ ] Original voice preserved in content
 - [ ] File saved to correct location

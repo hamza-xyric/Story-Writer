@@ -16,7 +16,7 @@ time_period:
   precision: period
 
 target_word_count: 5000
-current_word_count: 548
+current_word_count: 527
 estimated_read_time: 20
 
 entries:
@@ -50,7 +50,7 @@ sections:
     entries:
       - E-2024-002
     status: outline
-    word_count: 548
+    word_count: 527
     summary: "Steam message triggers memory cascade"
   - section_id: "C-001-03-01-B"
     title: "The Golden Era"

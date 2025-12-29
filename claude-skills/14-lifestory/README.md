@@ -42,7 +42,16 @@ This category contains skills for a long-term memoir writing project. The system
 | **LIFE-13** | Biographer Conversation | AI asks questions like a patient biographer |
 | **LIFE-14** | Voice Capture | Handle transcribed voice recordings |
 | **LIFE-15** | Draft Processor | Convert drafts to structured entries |
-| **LIFE-16** | Journal Capture | Daily reflections that trigger memories (NEW) |
+| **LIFE-16** | Journal Capture | Daily reflections that trigger memories |
+
+### Transcript Processing Skills (NEW)
+
+| ID | Name | Purpose |
+|----|------|---------|
+| **LIFE-17** | Transcript Ingestion | Parse, store, index conversation transcripts |
+| **LIFE-18** | Voice Mining | Learn speaking patterns, sarcasm, humor from transcripts |
+| **LIFE-19** | Story Extraction | Find and extract stories told in conversations |
+| **LIFE-25** | Gap Analysis | Identify undocumented people, places, events → leads database |
 
 ### Book Generation Skills
 
@@ -53,13 +62,22 @@ This category contains skills for a long-term memoir writing project. The system
 | **LIFE-22** | Prose Polisher | Refine chapters to publication quality |
 | **LIFE-23** | Export Manager | Generate PDF, EPUB exports |
 
-### Data Integrity Skills (NEW)
+### Domain Lens Skills (NEW)
 
 | ID | Name | Purpose |
 |----|------|---------|
-| **LIFE-30** | Data Consistency Checker | Audit database for mismatches, broken links |
+| **LIFE-40** | Dreams Lens | Detect dream content, add exploration questions |
+| **LIFE-41** | Trading Lens | Detect trading content, add reflection questions |
+| **LIFE-42** | Problems Lens | Detect problem content, add processing questions |
+
+### Data Integrity Skills
+
+| ID | Name | Purpose |
+|----|------|---------|
+| **LIFE-30** | Data Consistency Checker (v3.0) | 18 structural integrity rules |
 | **LIFE-31** | Auto-Sync | Automatically sync word counts across levels |
 | **LIFE-32** | Data Validator | Validate data before any save operation |
+| **LIFE-35** | Data Health Report | Unified orchestrator for LIFE-30 + LIFE-04 |
 
 ### Planned Skills
 
@@ -73,7 +91,7 @@ This category contains skills for a long-term memoir writing project. The system
 
 ## How to Use
 
-### Four Ways to Capture
+### Five Ways to Capture
 
 **1. Freeform (LIFE-12)** - Just dump thoughts, no pressure
 
@@ -103,6 +121,69 @@ Record a voice memo → Transcribe with Whisper → Paste here
 "Had coffee with an old friend. Reminded me of college nights..."
 → AI detects memory triggers, suggests exploration
 ```
+
+**5. Transcripts (LIFE-17/18/19/25)** - Mine your conversations (NEW)
+
+```
+/transcript
+[paste transcript from Otter.ai, Zoom, Teams, etc.]
+→ AI learns your speaking patterns, extracts stories, finds leads
+```
+
+### Transcript Processing: Mining Candid Conversations (NEW)
+
+Transcripts from meetings, calls, and casual conversations reveal:
+- **Speaking patterns** - How you actually talk (different from writing)
+- **Sarcasm/humor** - Learned over time to avoid misinterpretation
+- **Stories told naturally** - Memories shared without trying
+- **Life details** - People, places, events mentioned in passing
+
+```
+/transcript               → Paste and ingest a transcript
+       ↓
+LIFE-17 parses, stores, offers options:
+       ↓
+/transcript voice         → Learn speaking patterns (LIFE-18)
+/transcript stories       → Extract stories told (LIFE-19)
+/transcript gaps          → Find undocumented mentions (LIFE-25)
+/transcript all           → Run all three
+       ↓
+Sarcasm flags verified
+Stories → drafts pipeline
+Leads → biographer suggestions
+```
+
+**Sarcasm Learning**: The system learns your sarcasm patterns over time. When you say "I literally died" or "best meeting ever," it learns to flag these as exaggeration/irony rather than taking them literally.
+
+**Leads Integration**: People and places mentioned but not documented become "leads" that are automatically suggested during `/biographer` sessions.
+
+### Domain Lenses: Specialized Perspectives (NEW)
+
+When you write about certain topics, the system automatically detects the domain and adds specialized questions.
+
+**Available Lenses:**
+
+| Domain | Detects | Questions About |
+|--------|---------|-----------------|
+| Dreams | dream, nightmare, sleep, woke up | Emotions, connections, patterns, symbolism |
+| Trading | trade, market, profit, loss | Emotional state, rules, lessons, patterns |
+| Problems | problem, stuck, frustrated | Progress, blockers, support, resolution |
+
+**How it works:**
+```
+You write: "Had a weird dream about the market crashing..."
+             ↓
+LIFE-01 detects: [dreams, trading]
+             ↓
+LIFE-40 adds: "What emotions did you feel in the dream?"
+LIFE-41 adds: "Is there anxiety about your trading lately?"
+             ↓
+Questions merged into "Questions to Explore"
+```
+
+**Multi-domain entries:** When your content touches multiple domains (like a dream about trading), each lens contributes relevant questions. This creates richer exploration opportunities.
+
+**Reference:** `story-data/context/lenses.md`
 
 ### Journaling: The Present → Past Bridge
 
@@ -185,6 +266,18 @@ When you have more thoughts about an existing memory, should you update or creat
 /promote               → Review journals for book-worthy moments
 ```
 
+**Transcript Commands (NEW)**
+```
+/transcript            → Paste and ingest a transcript
+/transcript voice      → Analyze speaking patterns (LIFE-18)
+/transcript stories    → Extract stories told (LIFE-19)
+/transcript gaps       → Find undocumented mentions (LIFE-25)
+/transcript all        → Run all three analyses
+/transcripts           → List stored transcripts
+/leads                 → View leads database
+/sarcasm               → View learned sarcasm patterns
+```
+
 **Story Management**
 ```
 "Process this as a story entry"     → LIFE-01
@@ -203,7 +296,10 @@ When you have more thoughts about an existing memory, should you update or creat
 
 **Data Integrity**
 ```
-/consistency-check                  → LIFE-30 (audit database)
+/health                             → LIFE-35 (full data health report)
+/health quick                       → LIFE-30 only (structural)
+/health narrative                   → LIFE-04 only (contradictions)
+/consistency-check                  → Alias for /health
 /sync-counts                        → LIFE-31 (fix word counts)
 ```
 
@@ -241,7 +337,10 @@ When you have more thoughts about an existing memory, should you update or creat
 │   ├── other/
 │   └── _TEMPLATE.md
 ├── context/          # Personal context (grows over time)
-│   └── hamza-profile.md  # Voice profile, preferences, patterns
+│   ├── hamza-profile.md  # Voice profile, preferences, patterns
+│   ├── leads.md          # Leads database from transcripts
+│   └── lenses.md         # Domain lens definitions (NEW)
+├── transcripts/      # Stored conversation transcripts (NEW)
 ├── chapters/         # Organized narrative chapters
 ├── timeline/         # Chronological index
 └── themes/           # Recurring themes
@@ -364,7 +463,11 @@ A Vite + React local web app for viewing/browsing (writing stays in terminal):
 
 ---
 
-*Life Story System v2.4 | Created 2024-12-24 | Updated 2024-12-25*
+*Life Story System v2.8 | Created 2024-12-24 | Updated 2024-12-29*
+*v2.8: Data Health System - LIFE-30 expanded to 18 rules, LIFE-35 unified orchestrator, /health command replaces /consistency-check*
+*v2.7: Infrastructure hardening - LIFE-01 expansion mode, LIFE-13 leads integration, LIFE-20 chapter auto-suggestion, LIFE-41 casual keyword detection, standardized domains field across all files*
+*v2.6: Added domain lens system (LIFE-40/41/42) - auto-detect dreams, trading, problems for specialized questions*
+*v2.5: Added transcript processing (LIFE-17/18/19/25) - mine candid conversations for voice, stories, and leads*
 *v2.4: Added journaling (LIFE-16) - present-focused capture with memory bridge*
 *v2.3: Added data integrity skills (LIFE-30/31/32) for automatic word count sync*
 *v2.2: Added book generation skills (LIFE-20/21/22)*

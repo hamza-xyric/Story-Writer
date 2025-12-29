@@ -30,12 +30,56 @@ voice_patterns:
       - "I'm like" [emerging]
     humor_style: "[TO BE LEARNED]"
     emotional_deflection: "[TO BE LEARNED]"  # How he deflects deep emotions
-  # Speaking patterns (from voice recordings)
+  # Speaking patterns (from transcripts via LIFE-18)
   speaking:
-    story_starters: []           # e.g., "So like...", "Okay so..."
-    filler_patterns: []          # e.g., "um", "you know"
-    tangent_signals: []          # e.g., "Oh! That reminds me..."
-    emotional_markers: []        # e.g., "The thing is..."
+    story_starters:
+      - "So basically..." [emerging]
+      - "Man, I did something..." [emerging]
+      - "Like for example..." [emerging]
+      - "Now, now take a step back..." [emerging]
+    filler_patterns:
+      - "like" [confirmed - very high frequency]
+      - "um" [emerging]
+      - "you know" [emerging]
+      - "basically" [emerging]
+      - "blah blah blah" [emerging - dismissive shorthand]
+    tangent_signals:
+      - "By the way..." [emerging]
+      - "What was I saying?" [emerging]
+      - "One second" [emerging]
+      - "Wait..." [emerging]
+    emotional_markers:
+      - "The thing is..." [emerging - precedes strong opinions]
+      - "It's not that..." [emerging - precedes clarifications]
+      - "I really think..." [emerging]
+      - "Like really really" [emerging - repetition for emphasis]
+      - "I want you to..." [emerging - direct communication]
+    humor_markers:
+      - "Weird flex, by the way" [emerging]
+      - "Mashallah. Mashallah." [emerging - teasing]
+      - "Am I speaking to myself or what?" [emerging]
+    signature_phrases:
+      - "slavery mindset" [emerging - key concept]
+      - "the matrix" [emerging - metaphor for corporate mindset]
+      - "100%" [emerging - strong agreement]
+      - "Screw that/this" [emerging - dismissive]
+      - "That's amazing" [emerging - genuine enthusiasm]
+    # Sarcasm vocabulary (learned from transcripts via LIFE-18)
+    # Confidence: [emerging] 1-2x | [growing] 3-4x | [confirmed] 5+x
+    sarcasm_vocabulary:
+      - pattern: "Good job. Good job."
+        meaning: "deadpan acknowledgment"
+        confidence: emerging
+        context: "response to humble-brag or flex"
+      - pattern: "Okay, fine."
+        meaning: "resigned acceptance"
+        confidence: emerging
+        context: "conceding a point"
+    communication_style:
+      - "Direct and instructive" [emerging - teaching tone]
+      - "Uses repetition for emphasis" [emerging]
+      - "Metaphor-heavy" [emerging]
+      - "Code-switches English/Urdu" [emerging - Acha, Mashallah, Inshallah]
 
 # === VOCABULARY FINGERPRINT ===
 vocabulary_patterns:
@@ -133,16 +177,26 @@ input_analytics:
   total_freeform_captures: 2
   total_conversations: 0
   total_voice_recordings: 0
+  total_journal_entries: 3  # Journal files: 2025-12-26, 2025-12-27, 2025-12-28
+  total_transcripts: 1
   avg_freeform_length: 447
   avg_conversation_questions: 0
+  avg_journal_length: 477
+  # Transcript analytics (updated by LIFE-17/18/19/20)
+  transcript_analytics:
+    transcripts_analyzed: 1
+    sarcasm_patterns_learned: 2
+    stories_extracted: 0          # No full stories, just fragments
+    leads_generated: 6
 
 # === METADATA ===
 profile_created: "2024-12-24"
-last_session: "2024-12-25"
-total_sessions: 1
+last_session: "2025-12-28"
+total_sessions: 4
 total_entries: 2
-total_words: 895
-profile_version: "2.1"
+total_journals: 3
+total_words: 2443
+profile_version: "2.2"
 baseline_analysis: "voice-baseline-2024-12-25.md"
 ---
 

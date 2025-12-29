@@ -16,7 +16,7 @@ time_period:
   precision: day
 
 target_word_count: 3000
-current_word_count: 456
+current_word_count: 384
 estimated_read_time: 12
 ghostwriter_score: 0.78
 
@@ -49,7 +49,7 @@ sections:
     entries:
       - E-2024-001
     status: outline
-    word_count: 347
+    word_count: 333
     summary: "The dream of writing a book, why now"
   - section_id: "C-001-06-01-B"
     title: "The Method"

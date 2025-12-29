@@ -14,6 +14,7 @@ notable_events: []                    # Quick event tags
 triggered_memories: []                # Past memories that surfaced
 book_worthy: null                     # false | seed | maybe | yes
 promoted_to: null                     # Draft ID if content was extracted
+domains: []                           # Auto-detected: dreams, trading, problems (see lenses.md)
 ---
 
 [Content goes here - freeform, exactly as written]

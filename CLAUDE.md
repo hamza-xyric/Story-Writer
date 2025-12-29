@@ -16,13 +16,14 @@ A **personal memoir system** for capturing Hamza's life story. AI acts as a pati
 
 ## Quick Start
 
-### Four Ways to Capture
+### Five Ways to Capture
 
 ```
 /freeform     → Just dump thoughts, fragments, notes (no questions)
 /biographer   → AI asks questions like a patient biographer
 /voice        → Instructions for voice recording workflow
 /journal      → Daily reflections (present → past bridge)
+/transcript   → Paste conversation transcripts to mine (NEW)
 ```
 
 ### Key Commands
@@ -32,6 +33,8 @@ A **personal memoir system** for capturing Hamza's life story. AI acts as a pati
 /process      → Turn draft into structured entry
 /journals     → List recent journal entries
 /promote      → Extract book-worthy moments from journals
+/transcript   → Mine candid conversations (voice, stories, leads)
+/leads        → View leads database from transcripts
 ```
 
 ---
@@ -41,10 +44,13 @@ A **personal memoir system** for capturing Hamza's life story. AI acts as a pati
 | File | Purpose |
 |------|---------|
 | `story-data/context/hamza-profile.md` | Voice profile - READ AT SESSION START |
+| `story-data/context/leads.md` | Leads database from transcripts |
+| `story-data/context/lenses.md` | Domain lens definitions (NEW) |
 | `claude-skills/14-lifestory/README.md` | Full skill reference |
 | `story-data/drafts/` | Raw captures before processing |
 | `story-data/journals/` | Daily reflections (present-focused) |
 | `story-data/entries/` | Structured story entries |
+| `story-data/transcripts/` | Stored conversation transcripts |
 
 ---
 
@@ -62,6 +68,16 @@ A **personal memoir system** for capturing Hamza's life story. AI acts as a pati
 | **LIFE-14** | Voice Capture | `/voice` |
 | **LIFE-15** | Draft Processor | `/process` |
 | **LIFE-16** | Journal Capture | `/journal`, `/today`, `/promote` |
+| **LIFE-17** | Transcript Ingestion | `/transcript` |
+| **LIFE-18** | Voice Mining | `/transcript voice` |
+| **LIFE-19** | Story Extraction | `/transcript stories` |
+| **LIFE-25** | Gap Analysis | `/transcript gaps`, `/leads` |
+| **LIFE-30** | Data Consistency Checker | `/health quick`, `/consistency-check` |
+| **LIFE-31** | Auto-Sync | After data changes, `/sync` |
+| **LIFE-35** | Data Health Report | `/health`, `/health narrative` |
+| **LIFE-40** | Dreams Lens | Auto-detects dream content |
+| **LIFE-41** | Trading Lens | Auto-detects trading content |
+| **LIFE-42** | Problems Lens | Auto-detects problem content |
 
 ---
 
@@ -105,6 +121,20 @@ Capture (freeform/biographer/voice)      OR      Journal (today's reflections)
 
 ---
 
+## Domain Lenses (NEW)
+
+Entries automatically get domain-specific questions based on content:
+
+| Domain | Detects | Adds Questions About |
+|--------|---------|----------------------|
+| Dreams | dream, nightmare, woke up | Emotions, patterns, meaning |
+| Trading | trade, market, profit, loss | Emotional state, rules, lessons |
+| Problems | problem, stuck, frustrated | Progress, blockers, support |
+
+**Multi-domain:** An entry about "had a nightmare about losing money in the market" triggers both Dreams + Trading lenses, getting questions from both.
+
+---
+
 ## Philosophy
 
 - **Memory is not history** - Emotional truth matters
@@ -126,4 +156,28 @@ When generating prose, AI must:
 
 ---
 
-*Life Story System v2.4 | 2024-12-25*
+## Session-End Data Integrity Protocol
+
+**Before ending ANY session where story data was modified:**
+
+1. Run `/health` (or `/consistency-check`) to audit all 18 integrity rules
+2. Rules 1-8 (Critical) **MUST** pass - session cannot end with failures
+3. Rules 9-18 (Warning/Info) are noted for future attention
+4. Fix any critical issues found
+5. State "Data integrity verified" in closing
+
+**MANDATORY** - session not complete until verified.
+
+**Commands:**
+```
+/health              → Full report (LIFE-30 structural + LIFE-04 narrative)
+/health quick        → Structural only (faster)
+/health narrative    → Narrative only (story contradictions)
+/consistency-check   → Alias for /health
+```
+
+**Reference:** See `story-data/context/data-standards.md` for all 18 Integrity Rules.
+
+---
+
+*Life Story System v2.8 | 2024-12-29*

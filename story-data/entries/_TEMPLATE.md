@@ -8,11 +8,13 @@ characters: []
 locations: []
 themes: []
 emotion_tags: []
+domains: []                               # Auto-detected: dreams, trading, problems (see lenses.md)
 completeness: brief | partial | detailed
 writing_mode: freeform | prompted | conversation | voice
 prompt_used: null
 revisit_count: 0
 word_count: 0
+chapter_id: null                          # Set when entry is assigned to a chapter
 
 # === ORIGIN (how this entry was captured) ===
 origin:

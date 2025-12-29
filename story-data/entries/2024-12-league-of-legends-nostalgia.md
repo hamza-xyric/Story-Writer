@@ -20,11 +20,13 @@ emotion_tags:
   - wistful
   - reflective
   - warm
+domains: []                               # No domain triggers detected
 completeness: detailed
 writing_mode: freeform
 prompt_used: null
 revisit_count: 1
-word_count: 548
+word_count: 527
+chapter_id: "C-001-03-01"
 
 origin:
   type: freeform
